@@ -1,4 +1,4 @@
-# Cherry-K Clinic REST API
+# HRM-MODULE REST API
 
 ## Installation
 
