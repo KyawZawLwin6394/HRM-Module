@@ -1,5 +1,6 @@
 const cors = require('cors');
 const path = require('path');
+const os = require('os');
 const cronitor = require('cronitor')('bb06d5c8745f45f2a9fc62755b7414ea');
 const createIndexs = require('./dbIndexes').createIndex
 const express = require('express'),
@@ -42,7 +43,20 @@ app.use('/static', express.static(path.join(__dirname, 'uploads')));
 // Bring in our dependencies
 require('./config/express')(app, config);
 
-server.listen(port, () => {
+const interfaces = os.networkInterfaces();
+const addresses = interfaces['Ethernet'] || interfaces['en0'] || interfaces['Wi-Fi'] || []; // Adjust the interface name for your system
+const ipv4Addresses = addresses.filter(address => address.family === 'IPv4');
+
+server.listen(port, ipv4Addresses[0].address, () => {
+
+  if (ipv4Addresses.length > 0) {
+    const currentIPv4 = ipv4Addresses[0].address;
+    console.log('Current IPv4 address:', currentIPv4);
+  } else {
+    console.log('No IPv4 addresses found');
+    const interfaceNames = Object.keys(interfaces);
+    console.log('Available network interface names:', interfaceNames);
+  }
   console.log('We are live on port: ', port);
 });
 
