@@ -33,7 +33,7 @@ let DepartmentSchema = new Schema({
     },
     reportingTo: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'departments'
+        ref: 'Departments'
     },
     departmentManager: {
         type: mongoose.Schema.Types.ObjectId,
