@@ -20,45 +20,6 @@ exports.createUser = async (req, res) => {
   }
 };
 
-exports.createDoctor = async (req, res) => {
-  let data = req.body;
-  try {
-    data = {...data, isDoctor:true} // set doctor role
-    const newUser = new User(data);
-    let result = await newUser.save();
-    res.status(200).send({
-      success: true,
-      data: result,
-    });
-  } catch (e) {
-    const duplicateKey = Object.keys(e.keyValue)
-    if (e.code === 11000)
-      return res
-        .status(500)
-        .send({ error: true, message: `${duplicateKey} is already registered!` });
-    return res.status(500).send({ error: true, message: e.message });
-  }
-};
-
-exports.createAdmin = async (req, res) => {
-  let data = req.body;
-  try {
-    data = {...data, isAdmin:true} // set admin role
-    const newUser = new User(data);
-    let result = await newUser.save();
-    res.status(200).send({
-      success: true,
-      data: result,
-    });
-  } catch (e) {
-    const duplicateKey = Object.keys(e.keyValue)
-    if (e.code === 11000)
-      return res
-        .status(500)
-        .send({ error: true, message: `${duplicateKey} is already registered!` });
-    return res.status(500).send({ error: true, message: e.message });
-  }
-};
 
 exports.listAllUsers = async (req, res) => {
   let { keyword, role, limit, skip } = req.query;
@@ -89,7 +50,7 @@ exports.listAllUsers = async (req, res) => {
         page_count: page,
         total_count: count,
       },
-      list: result,
+      data: result,
     });
   } catch (e) {
     return res.status(500).send({ error: true, message: e.message });

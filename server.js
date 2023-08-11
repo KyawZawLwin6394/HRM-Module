@@ -47,7 +47,7 @@ const interfaces = os.networkInterfaces();
 const addresses = interfaces['Ethernet'] || interfaces['en0'] || interfaces['Wi-Fi'] || []; // Adjust the interface name for your system
 const ipv4Addresses = addresses.filter(address => address.family === 'IPv4');
 
-server.listen(port, ipv4Addresses[0].address, () => {
+server.listen(port, () => {
 
   if (ipv4Addresses.length > 0) {
     const currentIPv4 = ipv4Addresses[0].address;
