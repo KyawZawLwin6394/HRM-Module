@@ -5,7 +5,7 @@ mongoose.promise = global.Promise;
 const Schema = mongoose.Schema;
 
 let DepartmentSchema = new Schema({
-    createdDate: {
+    createdAt: {
         type: Date,
         default: Date.now
     },
