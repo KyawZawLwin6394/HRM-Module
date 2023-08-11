@@ -7,7 +7,7 @@ const verifyToken = require('../lib/verifyToken');
 module.exports = (app) => {
     app
         .route('/api/position')
-        .post(catchError(position.createPosition))
+        .post(verifyToken, catchError(position.createPosition))
         .put(verifyToken, catchError(position.updatePosition));
 
     app
@@ -16,5 +16,5 @@ module.exports = (app) => {
         .delete(verifyToken, catchError(position.deletePosition))
         .post(verifyToken, catchError(position.activatePosition));
 
-    app.route('/api/positions').get(verifyToken, catchError(position.listAllPositions));    
+    app.route('/api/positions').get(verifyToken, catchError(position.listAllPositions));
 };
