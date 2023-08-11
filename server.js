@@ -19,6 +19,7 @@ const userUtil = require('./app/lib/userUtil');
 
 // mongoose instance connection url connection
 if (mongoose.connection.readyState != 1) {
+  mongoose.set('strictQuery', false);
   mongoose.Promise = global.Promise;
   mongoose.connect(config.db, { useNewUrlParser: true, retryWrites: false, useUnifiedTopology: true });
 

@@ -30,70 +30,71 @@ let UserSchema = new Schema({
     type: String,
     required: true,
   },
-  phone: {
-    type: String,
-    unique: true,
-    required: [true, 'Phone Number Required!'],
+  age: {
+    type: Number
   },
-  startDate: {
+  DOB: {
     type: Date
-  },
-  salary: {
-    type: Number
-  },
-  allowance: {
-    type: Number,
-    default: 0
-  },
-  bonus: {
-    type: Number
-  },
-  incentive: {
-    type: Number
-  },
-  rating: {
-    type: Number
-  },
-  contract: {
-    type: Boolean
-  },
-  isAdmin: {
-    type: Boolean,
-    default: false,
-  },
-  isDoctor: {
-    type: Boolean,
-    default: false,
-  },
-  isUser: {
-    type: Boolean,
-    default: false,
   },
   gender: {
     type: String,
     enum: ['Male', 'Female'],
   },
-  position: {
+  phone: {
     type: String,
+    unique: true,
+    required: [true, 'Phone Number Required!'],
+  },
+  NRC: {
+    type: String
+  },
+  passportNo: {
+    type: String
+  },
+  educationBackground: {
+    type: String
+  },
+  educationCertificate: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Attachments'
+  },
+  workExperience: {
+    type: String
+  },
+  CV: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Attachments'
+  },
+  firstInterviewDate: {
+    type: Date
+  },
+  firstInterviewResult: {
+    type: Date
+  },
+  secondInterviewDate: {
+    type: Date
+  },
+  secondInterviewResult: {
+    type: Date
+  },
+  employedDate: {
+    type: Date
+  },
+  relatedDepartment: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Departments'
+  },
+  relatedPosition: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Positions'
   },
   isDeleted: {
     type: Boolean,
     default: false,
   },
-  lastLoginTime: {
+  createdAt: {
     type: Date,
-    default: null,
-  },
-  role: {
-    type: String,
-    enum: ['Doctor', 'User', 'Admin']
-  },
-  branch: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Branches'
-  },
-  branchName: {
-    type: String
+    default: Date.now
   }
 
 });

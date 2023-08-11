@@ -1,0 +1,56 @@
+'use strict';
+
+const mongoose = require('mongoose');
+mongoose.promise = global.Promise;
+const Schema = mongoose.Schema;
+
+let DepartmentSchema = new Schema({
+    createdDate: {
+        type: Date,
+        default: Date.now
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    name: {
+        type: String
+    },
+    description: {
+        type: String
+    },
+    level: {
+        type: String,
+        enum: ['Strategic', 'Tactical', 'Operation']
+    },
+    function: {
+        type: String,
+        enum: ['Sale&Marketing', 'Operation', 'Project Management', 'HR', 'Admin', 'Finance', 'IT', 'Logistic', 'Procurement']
+    },
+    activities: {
+        type: String,
+        enum: ['Primary', 'Secondary']
+    },
+    reportingTo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'departments'
+    },
+    departmentManager: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Employees'
+    },
+    assistantManager: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Employees'
+    },
+    relatedSalaryAccount: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'AccountingLists'
+    },
+    relatedExpenseAccount: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'AccountingLists'
+    }
+});
+
+module.exports = mongoose.model('Departments', DepartmentSchema);
