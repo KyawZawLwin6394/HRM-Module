@@ -40,6 +40,7 @@ mongoose.plugin((schema) => {
 
 //static files
 app.use('/static', express.static(path.join(__dirname, 'uploads')));
+//http://localhost:9000/static/hrm/employee/cv/CV-downloadBec1691998848972.png
 
 // Bring in our dependencies
 require('./config/express')(app, config);
@@ -61,17 +62,17 @@ server.listen(port, () => {
   console.log('We are live on port: ', port);
 });
 
-cronitor.wraps(cron);
-cronitor.schedule('AccountBalanceClosingAndOpening', '55 23 * * *', async function () {
-  console.log('Managing AccountBalance for every Accounting Accs!');
-  const isLastDay = await userUtil.getLatestDay();
-  if (isLastDay === true) {
-    await userUtil.createAccountBalance();
-    await userUtil.fixedAssetTransaction();
-  } else {
-    console.log('Today is not the right day for the scheduled task!');
-  }
-});
+// cronitor.wraps(cron);
+// cronitor.schedule('AccountBalanceClosingAndOpening', '55 23 * * *', async function () {
+//   console.log('Managing AccountBalance for every Accounting Accs!');
+//   const isLastDay = await userUtil.getLatestDay();
+//   if (isLastDay === true) {
+//     await userUtil.createAccountBalance();
+//     await userUtil.fixedAssetTransaction();
+//   } else {
+//     console.log('Today is not the right day for the scheduled task!');
+//   }
+// });
 
 // cron.schedule('55 23 * * *', () => {
 //   (async () => {
