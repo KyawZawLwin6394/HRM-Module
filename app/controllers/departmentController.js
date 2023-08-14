@@ -29,8 +29,8 @@ exports.listAllDepartments = async (req, res) => {
             : '';
         regexKeyword ? (query['name'] = regexKeyword) : '';
 
-        let result = await Department.find(query).populate('reportingTo departmentManager assistantManager relatedSalaryAccount relatedExpenseAccount');
-        count = await Department.find(query).count();
+        let result = await Department.find(query).limit(limit).skip(skip).populate('reportingTo departmentManager assistantManager relatedSalaryAccount relatedExpenseAccount');
+        count = await Department.find(query).limit(limit).skip(skip).count();
         const division = count / limit;
         page = Math.ceil(division);
 

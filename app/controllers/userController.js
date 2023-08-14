@@ -97,8 +97,8 @@ exports.listAllUsers = async (req, res) => {
       : '';
     regexKeyword ? (query['name'] = regexKeyword) : '';
 
-    let result = await User.find(query);
-    count = await User.find(query).count();
+    let result = await User.find(query).limit(limit).skip(skip);
+    count = await User.find(query).limit(limit).skip(skip).count();
     const division = count / limit;
     page = Math.ceil(division);
 
