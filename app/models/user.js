@@ -13,15 +13,6 @@ let UserSchema = new Schema({
   },
   email: {
     type: String,
-    unique: true,
-    lowercase: true,
-    trim: true,
-    validate: {
-      isAsync: true,
-      validator: validator.isEmail,
-      message: 'Invalid Email Address.',
-    },
-    required: [true, 'User email required'],
   },
   address: {
     type: String,
@@ -40,10 +31,11 @@ let UserSchema = new Schema({
     type: String,
     enum: ['Male', 'Female'],
   },
+  emergencyContact: {
+    type: String
+  },
   phone: {
     type: String,
-    unique: true,
-    required: [true, 'Phone Number Required!'],
   },
   NRC: {
     type: String
@@ -62,6 +54,14 @@ let UserSchema = new Schema({
     type: String
   },
   CV: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Attachments'
+  },
+  other: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Attachments'
+  },
+  recommendationLetter: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Attachments'
   },

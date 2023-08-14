@@ -19,6 +19,10 @@ let AttachmentSchema = new Schema({
     image:{
         type:String
     },
+    relatedEmployee:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Employees'
+    }
 });
 
 AttachmentSchema.pre('save', function (next) {

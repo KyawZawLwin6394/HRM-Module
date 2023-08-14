@@ -3,11 +3,12 @@
 const user = require('../controllers/userController');
 const { catchError } = require('../lib/errorHandler');
 const verifyToken = require('../lib/verifyToken');
+const upload = require('../lib/fieldUploader').upload
 
 module.exports = (app) => {
   app
     .route('/api/user')
-    .post(catchError(user.createUser))
+    .post(verifyToken, upload, catchError(user.createUser))
     .put(verifyToken, catchError(user.updateUser));
 
   app

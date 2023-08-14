@@ -16,41 +16,29 @@ function getRandomText() {
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        if (file.fieldname === "img") {
-            cb(null, './uploads/cherry-k/img');
-        } else if (file.fieldname === "history") {
-            cb(null, './uploads/cherry-k/history');
-        } else if (file.fieldname === "before") {
-            cb(null, './uploads/cherry-k/before');
-        } else if (file.fieldname === "after") {
-            cb(null, './uploads/cherry-k/after');
-        } else if (file.fieldname === "consent") {
-            cb(null, './uploads/cherry-k/consent');
-        } else if (file.fieldname === "payment") {
-            cb(null, './uploads/cherry-k/payment');
-        } else if (file.fieldname === "email") {
-            cb(null, './uploads/cherry-k/email');
-        }
+        if (file.fieldname === "edu") {
+            cb(null, './uploads/hrm/employee/edu');
+        } else if (file.fieldname === "cv") {
+            cb(null, './uploads/hrm/employee/cv');
+        } else if (file.fieldname === "other") {
+            cb(null, './uploads/hrm/employee/other');
+        } else if (file.fieldname === "recLet") {
+            cb(null, './uploads/hrm/employee/recLet');
+        } 
 
     },
     filename: function (req, file, cb) {
         let name = file.originalname.split(".")[0];
         let ext = file.originalname.split(".")[1];
         const randomText = getRandomText();
-        if (file.fieldname === "img") {
-            cb(null, name + randomText + Date.now() + "." + ext)
-        } else if (file.fieldname === "history") {
-            cb(null, "TH-" + name + randomText + Date.now() + "." + ext)
-        } else if (file.fieldname === "before") {
-            cb(null, "BF-" + name + randomText + Date.now() + "." + ext)
-        } else if (file.fieldname === "after") {
-            cb(null, "AF-" + name + randomText + Date.now() + "." + ext)
-        } else if (file.fieldname === "consent") {
-            cb(null, "CS-" + name + randomText + Date.now() + "." + ext)
-        } else if (file.fieldname === "payment") {
-            cb(null, "PY-" + name + randomText + Date.now() + "." + ext)
-        } else if (file.fieldname === "email") {
-            cb(null, "EM-" + name + randomText + Date.now() + "." + ext)
+        if (file.fieldname === "edu") {
+            cb(null, "EDU-" +name + randomText + Date.now() + "." + ext)
+        } else if (file.fieldname === "cv") {
+            cb(null, "CV-" + name + randomText + Date.now() + "." + ext)
+        } else if (file.fieldname === "other") {
+            cb(null, "OTH-" + name + randomText + Date.now() + "." + ext)
+        } else if (file.fieldname === "recLet") {
+            cb(null, "RL-" + name + randomText + Date.now() + "." + ext)
         }
 
 
@@ -64,7 +52,7 @@ exports.upload = multer({
                 fs.mkdirSync(uri[i], { recursive: true });
             }
         }
-        let filetypes = /jpeg|jpg|png|pdf/;
+        let filetypes = /jpeg|jpg|png|pdf|docx/;
         let mimetype = filetypes.test(file.mimetype);
         const randomText = getRandomText();
         let extname = filetypes.test(
@@ -84,32 +72,20 @@ exports.upload = multer({
 }).fields(
     [
         {
-            name: 'img',
-            maxCount: 1
-        },
-        {
-            name: 'history',
-            maxCount: 3
-        },
-        {
-            name: 'before',
+            name: 'edu',
             maxCount: 5
         },
         {
-            name: 'after',
+            name: 'cv',
+            maxCount: 2
+        },
+        {
+            name: 'other',
             maxCount: 5
         },
         {
-            name: 'consent',
+            name: 'recLet',
             maxCount: 1
         },
-        {
-            name: 'payment',
-            maxCount: 1
-        },
-        {
-            name: 'email',
-            maxCount: 4
-        }
     ]
 );

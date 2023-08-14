@@ -6,12 +6,12 @@ const config = {
   development: {
     root: rootPath,
     app: {
-      name: 'Clinic-Denovo',
+      name: 'HRM',
     },
     //db: 'mongodb://127.0.0.1:3221', 
     db: 'mongodb+srv://projectDev-01:O9YGEyPQvKyA3Q48@kwintechinstances.usgwoxy.mongodb.net/HRM?retryWrites=true&w=majority',
-    //db: 'mongodb+srv://dbuser:P7qBNveg8bVO1d2z@cluster0.85ozwwv.mongodb.net/cherry-k?retryWrites=true&w=majority', 
-    //uploadsURI: ['./uploads/cherry-k/img', './uploads/cherry-k/history', './uploads/cherry-k/before', './uploads/cherry-k/after', './uploads/cherry-k/consent', './uploads/cherry-k/payment', './uploads/cherry-k/email'],
+    //db: 'mongodb+srv://dbuser:P7qBNveg8bVO1d2z@cluster0.85ozwwv.mongodb.net/hrm?retryWrites=true&w=majority', 
+    uploadsURI: ['./uploads/hrm/employee/edu', './uploads/hrm/employee/cv', './uploads/hrm/employee/other', './uploads/hrm/employee/recLet'],
     dbName: 'HRM',
     maxLoginAttempts: 5,
     lockTime: 30 * 60 * 1000,
@@ -20,7 +20,7 @@ const config = {
     defaultPasswordExpire: 86400,
     //senderEmail: 'info.clinicdenovo@gmail.com',
     //senderPassword: 'rftobtfnqwfgodoe',
-    //savePDF:'./uploads/cherry-k/sendEmail'
+    //savePDF:'./uploads/hrm/sendEmail'
   },
 
   production: {
@@ -29,9 +29,9 @@ const config = {
       name: 'Clinic-Denovo',
     },
     //db: 'mongodb://127.0.0.1:3221', 
-    //db: 'mongodb+srv://dbuser:P7qBNveg8bVO1d2z@cluster0.85ozwwv.mongodb.net/cherry-k?retryWrites=true&w=majority',
+    //db: 'mongodb+srv://dbuser:P7qBNveg8bVO1d2z@cluster0.85ozwwv.mongodb.net/hrm?retryWrites=true&w=majority',
     db: 'mongodb+srv://projectDev-01:O9YGEyPQvKyA3Q48@kwintechinstances.usgwoxy.mongodb.net/HRM?retryWrites=true&w=majority',
-    //uploadsURI: ['./uploads/cherry-k/img', './uploads/cherry-k/history', './uploads/cherry-k/before', './uploads/cherry-k/after', './uploads/cherry-k/consent', './uploads/cherry-k/payment', './uploads/cherry-k/email'],
+    uploadsURI: ['./uploads/hrm/employee/edu', './uploads/hrm/employee/cv', './uploads/hrm/employee/other', './uploads/hrm/employee/recLet'],
     dbName: 'HRM',
     maxLoginAttempts: 5,
     lockTime: 30 * 60 * 1000,
@@ -40,7 +40,7 @@ const config = {
     defaultPasswordExpire: 86400,
     //senderEmail: 'info.clinicdenovo@gmail.com',
     //senderPassword: 'rftobtfnqwfgodoe',
-    //savePDF:'./uploads/cherry-k/sendEmail'
+    //savePDF:'./uploads/hrm/sendEmail'
   },
 };
 

@@ -1,9 +1,75 @@
 'use strict';
 const User = require('../models/user');
+const Attachment = require('../models/attachment')
+
 exports.createUser = async (req, res) => {
   let data = req.body;
+  let files = req.files
   try {
-    data = {...data, isUser:true} // set user role
+    if (files.cv) {
+      let imgPath = files.cv[0].path.split('hrm')[1];
+      const attachData = {
+        fileName: files.cv[0].originalname,
+        imgUrl: imgPath,
+        image: imgPath.split('\\')[2],
+        relatedEmployee: req.credentials.id
+      };
+      const newAttachment = new Attachment(attachData);
+      const attachResult = await newAttachment.save();
+      data = { ...data, CV: attachResult._id.toString() };
+    }
+
+    if (files.edu) {
+      let imgPath = files.edu[0].path.split('hrm')[1];
+      const attachData = {
+        fileName: files.edu[0].originalname,
+        imgUrl: imgPath,
+        image: imgPath.split('\\')[2],
+        relatedEmployee: req.credentials.id
+      };
+      const newAttachment = new Attachment(attachData);
+      const attachResult = await newAttachment.save();
+      data = { ...data, educationCertificate: attachResult._id.toString() };
+    }
+
+    if (files.recLet) {
+      let imgPath = files.recLet[0].path.split('hrm')[1];
+      const attachData = {
+        fileName: files.recLet[0].originalname,
+        imgUrl: imgPath,
+        image: imgPath.split('\\')[2],
+        relatedEmployee: req.credentials.id
+      };
+      const newAttachment = new Attachment(attachData);
+      const attachResult = await newAttachment.save();
+      data = { ...data, recommendationLetter: attachResult._id.toString() };
+    }
+
+    if (files.recLet) {
+      let imgPath = files.recLet[0].path.split('hrm')[1];
+      const attachData = {
+        fileName: files.recLet[0].originalname,
+        imgUrl: imgPath,
+        image: imgPath.split('\\')[2],
+        relatedEmployee: req.credentials.id
+      };
+      const newAttachment = new Attachment(attachData);
+      const attachResult = await newAttachment.save();
+      data = { ...data, recommendationLetter: attachResult._id.toString() };
+    }
+
+    if (files.other) {
+      let imgPath = files.other[0].path.split('hrm')[1];
+      const attachData = {
+        fileName: files.other[0].originalname,
+        imgUrl: imgPath,
+        image: imgPath.split('\\')[2],
+        relatedEmployee: req.credentials.id
+      };
+      const newAttachment = new Attachment(attachData);
+      const attachResult = await newAttachment.save();
+      data = { ...data, other: attachResult._id.toString() };
+    }
     const newUser = new User(data);
     let result = await newUser.save();
     res.status(200).send({
@@ -11,11 +77,6 @@ exports.createUser = async (req, res) => {
       data: result,
     });
   } catch (e) {
-    const duplicateKey = Object.keys(e.keyValue)
-    if (e.code === 11000)
-      return res
-        .status(500)
-        .send({ error: true, message: `${duplicateKey} is already registered!` });
     return res.status(500).send({ error: true, message: e.message });
   }
 };
@@ -28,7 +89,7 @@ exports.listAllUsers = async (req, res) => {
   try {
     limit = +limit <= 100 ? +limit : 10;
     skip = +skip || 0;
-    let query = {isDeleted:false},
+    let query = { isDeleted: false },
       regexKeyword;
     role ? (query['role'] = role.toUpperCase()) : '';
     keyword && /\w/.test(keyword)
@@ -72,8 +133,8 @@ exports.updateUser = async (req, res, next) => {
   let data = req.body;
   try {
 
-    const {password, ...preparation} = data //removes password field from data
-    let result = await User.findByIdAndUpdate(req.body.id, {$set:preparation}, {
+    const { password, ...preparation } = data //removes password field from data
+    let result = await User.findByIdAndUpdate(req.body.id, { $set: preparation }, {
       new: true,
     });
     return res.status(200).send({ success: true, data: result });
