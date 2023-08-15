@@ -29,8 +29,8 @@ exports.listAllPositions = async (req, res) => {
             : '';
         regexKeyword ? (query['name'] = regexKeyword) : '';
 
-        let result = await Position.find(query).populate('relatedDepartment');
-        count = await Position.find(query).count();
+        let result = await Position.find(query).skip(skip).limit(limit).populate('relatedDepartment');
+        count = await Position.find(query).skip(skip).limit(limit).count();
         const division = count / limit;
         page = Math.ceil(division);
 
