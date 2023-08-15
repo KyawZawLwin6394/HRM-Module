@@ -37,11 +37,11 @@ let DepartmentSchema = new Schema({
     },
     departmentManager: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Employees'
+        ref: 'Users'
     },
     assistantManager: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Employees'
+        ref: 'Users'
     },
     relatedSalaryAccount: {
         type: mongoose.Schema.Types.ObjectId,
