@@ -43,14 +43,14 @@ let DepartmentSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
     },
-    relatedSalaryAccount: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'AccountingLists'
-    },
-    relatedExpenseAccount: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'AccountingLists'
-    }
+    // relatedSalaryAccount: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'AccountingLists'
+    // },
+    // relatedExpenseAccount: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'AccountingLists'
+    // }
 });
 
 module.exports = mongoose.model('Departments', DepartmentSchema);
