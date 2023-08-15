@@ -46,6 +46,10 @@ let UserSchema = new Schema({
   educationBackground: {
     type: String
   },
+  profile: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Attachments'
+  },
   educationCertificate: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Attachments'

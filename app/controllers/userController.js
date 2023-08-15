@@ -97,7 +97,7 @@ exports.listAllUsers = async (req, res) => {
       : '';
     regexKeyword ? (query['name'] = regexKeyword) : '';
 
-    let result = await User.find(query).skip(skip).limit(limit);
+    let result = await User.find(query).skip(skip).limit(limit).populate('profile educationCertificate CV other recommendationLetter relatedDepartment relatedPosition');
     count = await User.find(query).skip(skip).limit(limit).count();
     const division = count / limit;
     page = Math.ceil(division);
@@ -120,7 +120,7 @@ exports.listAllUsers = async (req, res) => {
 
 exports.getUserDetail = async (req, res) => {
   try {
-    let result = await User.findById(req.params.id);
+    let result = await User.findById(req.params.id).populate('profile educationCertificate CV other recommendationLetter relatedDepartment relatedPosition');
     if (!result)
       return res.status(500).json({ error: true, message: 'No record found.' });
     res.json({ success: true, data: result });
