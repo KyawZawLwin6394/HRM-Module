@@ -29,7 +29,7 @@ exports.listAllDepartments = async (req, res) => {
             : '';
         regexKeyword ? (query['name'] = regexKeyword) : '';
 
-        let result = await Department.find(query).skip(skip).limit(limit).populate('reportingTo departmentManager assistantManager');
+        let result = await Department.find(query).skip(skip).limit(limit).populate('reportingTo directManager assistantManager');
         count = await Department.find(query).skip(skip).limit(limit).count();
         const division = count / limit;
         page = Math.ceil(division);
@@ -52,7 +52,7 @@ exports.listAllDepartments = async (req, res) => {
 
 exports.getDepartmentDetail = async (req, res) => {
     try {
-        let result = await Department.find({ _id: req.params.id }).populate('reportingTo departmentManager assistantManager relatedSalaryAccount relatedExpenseAccount');
+        let result = await Department.find({ _id: req.params.id }).populate('reportingTo directManager assistantManager relatedSalaryAccount relatedExpenseAccount');
         if (!result)
             return res.status(500).json({ error: true, message: 'No record found.' });
         res.json({ success: true, data: result });
@@ -64,7 +64,7 @@ exports.getDepartmentDetail = async (req, res) => {
 exports.updateDepartment = async (req, res, next) => {
     let data = req.body;
     try {
-        let result = await Department.findOneAndUpdate({ _id: data.id }, { data }, { new: true }).populate('reportingTo departmentManager assistantManager relatedSalaryAccount relatedExpenseAccount');
+        let result = await Department.findOneAndUpdate({ _id: data.id }, { data }, { new: true }).populate('reportingTo directManager assistantManager relatedSalaryAccount relatedExpenseAccount');
         return res.status(200).send({ success: true, data: result });
     } catch (error) {
         return res.status(500).send({ error: true, message: error.message });
