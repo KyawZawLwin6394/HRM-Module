@@ -35,7 +35,7 @@ let DepartmentSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Departments'
     },
-    departmentManager: {
+    directManager: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
     },
