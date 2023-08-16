@@ -98,7 +98,7 @@ exports.getUserDetail = async (req, res) => {
 
 exports.updateUser = async (req, res, next) => {
   let data = req.body;
-  let files = req.files;
+  const files = req.files;
   try {
     const attachments = [];
     const attachmentTypes = ['cv', 'edu', 'recLet', 'other', 'pf'];
@@ -128,11 +128,13 @@ exports.updateUser = async (req, res, next) => {
     for (const attachment of attachments) {
       data[attachmentMappings[attachment.type]] = attachment.id;
     }
-    let result = await User.findOneAndUpdate(data.id, data, {
+    console.log(data)
+    let result = await User.findOneAndUpdate({_id: data.id}, data, {
       new: true,
     });
     return res.status(200).send({ success: true, data: result });
   } catch (error) {
+    console.log(error)
     return res.status(500).send({ error: true, message: error.message });
   }
 };

@@ -9,7 +9,7 @@ module.exports = (app) => {
   app
     .route('/api/user')
     .post(verifyToken, upload, catchError(user.createUser))
-    .put(verifyToken, catchError(user.updateUser));
+    .put(verifyToken, upload, catchError(user.updateUser));
 
   app
     .route('/api/user/:id')
