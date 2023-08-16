@@ -98,6 +98,7 @@ exports.getUserDetail = async (req, res) => {
 
 exports.updateUser = async (req, res, next) => {
   let data = req.body;
+  let files = req.files;
   try {
     const attachments = [];
     const attachmentTypes = ['cv', 'edu', 'recLet', 'other', 'pf'];
