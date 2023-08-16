@@ -73,13 +73,13 @@ let UserSchema = new Schema({
     type: Date
   },
   firstInterviewResult: {
-    type: Date
+    type: String
   },
   secondInterviewDate: {
     type: Date
   },
   secondInterviewResult: {
-    type: Date
+    type: String
   },
   employedDate: {
     type: Date
