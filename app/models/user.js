@@ -84,6 +84,9 @@ let UserSchema = new Schema({
   employedDate: {
     type: Date
   },
+  fatherName: {
+    type: String
+  },
   relatedDepartment: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Departments'
@@ -100,9 +103,9 @@ let UserSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  profile:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'Attachments'
+  profile: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Attachments'
   }
 
 });
