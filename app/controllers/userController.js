@@ -24,7 +24,6 @@ exports.createUser = async (req, res) => {
           imgUrl: imgPath,
           image: imgPath.split('\\')[2],
           relatedEmployee: req.credentials.id,
-          type: type
         };
         const newAttachment = new Attachment(attachData);
         const attachResult = await newAttachment.save();
@@ -119,7 +118,6 @@ exports.updateUser = async (req, res, next) => {
           imgUrl: imgPath,
           image: imgPath.split('\\')[2],
           relatedEmployee: req.credentials.id,
-          type: type
         };
         const newAttachment = new Attachment(attachData);
         const attachResult = await newAttachment.save();

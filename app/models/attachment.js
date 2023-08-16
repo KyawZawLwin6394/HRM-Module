@@ -16,12 +16,12 @@ let AttachmentSchema = new Schema({
     fileName: {
         type: String,
     },
-    image:{
-        type:String
+    image: {
+        type: String
     },
-    relatedEmployee:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Employees'
+    relatedEmployee: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Employees'
     }
 });
 
