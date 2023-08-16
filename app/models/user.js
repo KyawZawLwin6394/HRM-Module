@@ -99,6 +99,10 @@ let UserSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  profile:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Attachments'
   }
 
 });

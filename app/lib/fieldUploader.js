@@ -24,7 +24,10 @@ var storage = multer.diskStorage({
             cb(null, './uploads/hrm/employee/other');
         } else if (file.fieldname === "recLet") {
             cb(null, './uploads/hrm/employee/recLet');
-        } 
+        }
+        else if (file.fieldname === "pf") {
+            cb(null, './uploads/hrm/employee/pf');
+        }
 
     },
     filename: function (req, file, cb) {
@@ -32,13 +35,15 @@ var storage = multer.diskStorage({
         let ext = file.originalname.split(".")[1];
         const randomText = getRandomText();
         if (file.fieldname === "edu") {
-            cb(null, "EDU-" +name + randomText + Date.now() + "." + ext)
+            cb(null, "EDU-" + name + randomText + Date.now() + "." + ext)
         } else if (file.fieldname === "cv") {
             cb(null, "CV-" + name + randomText + Date.now() + "." + ext)
         } else if (file.fieldname === "other") {
             cb(null, "OTH-" + name + randomText + Date.now() + "." + ext)
         } else if (file.fieldname === "recLet") {
             cb(null, "RL-" + name + randomText + Date.now() + "." + ext)
+        } else if (file.fieldname === "pf") {
+            cb(null, "PF-" + name + randomText + Date.now() + "." + ext)
         }
 
 
@@ -85,6 +90,10 @@ exports.upload = multer({
         },
         {
             name: 'recLet',
+            maxCount: 1
+        },
+        {
+            name: 'pf',
             maxCount: 1
         },
     ]
