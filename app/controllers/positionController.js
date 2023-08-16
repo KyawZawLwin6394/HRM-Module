@@ -15,7 +15,7 @@ exports.createPosition = async (req, res) => {
 };
 
 exports.listAllPositions = async (req, res) => {
-    let { keyword, role, limit, skip } = req.query;
+    let { keyword, role, limit, skip, rowsPerPage } = req.query;
     let count = 0;
     let page = 0;
     try {
@@ -30,8 +30,8 @@ exports.listAllPositions = async (req, res) => {
         regexKeyword ? (query['name'] = regexKeyword) : '';
 
         let result = await Position.find(query).skip(skip).limit(limit).populate('relatedDepartment');
-        count = await Position.find(query).skip(skip).limit(limit).count();
-        const division = count / limit;
+        count = await Position.find(query).count();
+        const division = count / (rowsPerPage || limit);
         page = Math.ceil(division);
 
         res.status(200).send({

@@ -50,7 +50,7 @@ exports.createUser = async (req, res) => {
 
 
 exports.listAllUsers = async (req, res) => {
-  let { keyword, role, limit, skip } = req.query;
+  let { keyword, role, limit, skip, rowsPerPage } = req.query;
   let count = 0;
   let page = 0;
   try {
@@ -65,8 +65,8 @@ exports.listAllUsers = async (req, res) => {
     regexKeyword ? (query['name'] = regexKeyword) : '';
 
     let result = await User.find(query).skip(skip).limit(limit).populate('profile educationCertificate CV other recommendationLetter relatedDepartment relatedPosition');
-    count = await User.find(query).skip(skip).limit(limit).count();
-    const division = count / limit;
+    count = await User.find(query).count();
+    const division = count / (rowsPerPage || limit);
     page = Math.ceil(division);
 
     res.status(200).send({
