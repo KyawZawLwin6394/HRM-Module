@@ -23,7 +23,8 @@ exports.createUser = async (req, res) => {
           fileName: files[type][0].originalname,
           imgUrl: imgPath,
           image: imgPath.split('\\')[2],
-          relatedEmployee: req.credentials.id
+          relatedEmployee: req.credentials.id,
+          type: type
         };
         const newAttachment = new Attachment(attachData);
         const attachResult = await newAttachment.save();
@@ -117,7 +118,8 @@ exports.updateUser = async (req, res, next) => {
           fileName: files[type][0].originalname,
           imgUrl: imgPath,
           image: imgPath.split('\\')[2],
-          relatedEmployee: req.credentials.id
+          relatedEmployee: req.credentials.id,
+          type: type
         };
         const newAttachment = new Attachment(attachData);
         const attachResult = await newAttachment.save();
@@ -129,7 +131,7 @@ exports.updateUser = async (req, res, next) => {
       data[attachmentMappings[attachment.type]] = attachment.id;
     }
     console.log(data)
-    let result = await User.findOneAndUpdate({_id: data.id}, data, {
+    let result = await User.findOneAndUpdate({ _id: data.id }, data, {
       new: true,
     });
     return res.status(200).send({ success: true, data: result });
