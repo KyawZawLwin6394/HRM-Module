@@ -61,10 +61,10 @@ let UserSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Attachments'
   },
-  other: {
+  other: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Attachments'
-  },
+  }],
   recommendationLetter: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Attachments'

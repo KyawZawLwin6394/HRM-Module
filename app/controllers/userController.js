@@ -18,24 +18,42 @@ exports.createUser = async (req, res) => {
 
     for (const type of attachmentTypes) {
       if (files[type]) {
-        const imgPath = files[type][0].path.split('hrm')[1];
-        const attachData = {
-          fileName: files[type][0].originalname,
-          imgUrl: imgPath,
-          image: type,
-          relatedEmployee: req.credentials.id,
-          description: data.description || undefined
-        };
-        const newAttachment = new Attachment(attachData);
-        const attachResult = await newAttachment.save();
-        attachments.push({ type, id: attachResult._id.toString() });
+        for (const item of files[type]) {
+          console.log(item, 'item')
+          const imgPath = item.path.split('hrm')[1];
+          const attachData = {
+            fileName: item.originalname,
+            imgUrl: imgPath,
+            image: type,
+            relatedEmployee: req.credentials.id,
+            description: data.description || undefined
+          };
+          const newAttachment = new Attachment(attachData);
+          const attachResult = await newAttachment.save();
+          attachments.push({ type, id: attachResult._id.toString() });
+        }
+
       }
     }
 
+    // for (const attachment of attachments) {
+    //   console.log(attachment.type)
+    //   data[attachmentMappings[attachment.type]] = attachments;
+    // }
+
     for (const attachment of attachments) {
-      data[attachmentMappings[attachment.type]] = attachment.id;
+      const { type, id } = attachment;
+
+      if (attachmentTypes.includes(type)) {
+        if (!data[type]) {
+          data[type] = [id]; // Initialize an array if it doesn't exist
+        } else {
+          data[type].push(id); // Add the ID to the existing array
+        }
+      }
     }
 
+    console.log(data)
     const newUser = new User(data);
     const result = await newUser.save();
 
@@ -44,6 +62,7 @@ exports.createUser = async (req, res) => {
       data: result,
     });
   } catch (e) {
+    console.log(e)
     return res.status(500).send({ error: true, message: e.message });
   }
 };
@@ -113,22 +132,39 @@ exports.updateUser = async (req, res, next) => {
 
     for (const type of attachmentTypes) {
       if (files[type]) {
-        const imgPath = files[type][0].path.split('hrm')[1];
-        const attachData = {
-          fileName: files[type][0].originalname,
-          imgUrl: imgPath,
-          image: type,
-          relatedEmployee: req.credentials.id,
-          description: data.description || undefined
-        };
-        const newAttachment = new Attachment(attachData);
-        const attachResult = await newAttachment.save();
-        attachments.push({ type, id: attachResult._id.toString() });
+        for (const item of files[type]) {
+          console.log(item, 'item')
+          const imgPath = item.path.split('hrm')[1];
+          const attachData = {
+            fileName: item.originalname,
+            imgUrl: imgPath,
+            image: type,
+            relatedEmployee: req.credentials.id,
+            description: data.description || undefined
+          };
+          const newAttachment = new Attachment(attachData);
+          const attachResult = await newAttachment.save();
+          attachments.push({ type, id: attachResult._id.toString() });
+        }
+
       }
     }
 
+    // for (const attachment of attachments) {
+    //   console.log(attachment.type)
+    //   data[attachmentMappings[attachment.type]] = attachments;
+    // }
+
     for (const attachment of attachments) {
-      data[attachmentMappings[attachment.type]] = attachment.id;
+      const { type, id } = attachment;
+
+      if (attachmentTypes.includes(type)) {
+        if (!data[type]) {
+          data[type] = [id]; // Initialize an array if it doesn't exist
+        } else {
+          data[type].push(id); // Add the ID to the existing array
+        }
+      }
     }
     console.log(data)
     let result = await User.findOneAndUpdate({ _id: data.id }, { $set: data }, {
