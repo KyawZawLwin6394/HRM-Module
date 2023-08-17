@@ -106,7 +106,7 @@ let UserSchema = new Schema({
   profile: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Attachments'
-  }
+  },
 
 });
 const reasons = (UserSchema.statics.failedLogin = {
