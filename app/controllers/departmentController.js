@@ -52,7 +52,7 @@ exports.listAllDepartments = async (req, res) => {
 
 exports.getDepartmentDetail = async (req, res) => {
     try {
-        let result = await Department.find({ _id: req.params.id }).populate('reportingTo directManager assistantManager relatedSalaryAccount relatedExpenseAccount');
+        let result = await Department.find({ _id: req.params.id }).populate('reportingTo directManager assistantManager');
         if (!result)
             return res.status(500).json({ error: true, message: 'No record found.' });
         res.json({ success: true, data: result });
@@ -64,7 +64,7 @@ exports.getDepartmentDetail = async (req, res) => {
 exports.updateDepartment = async (req, res, next) => {
     let data = req.body;
     try {
-        let result = await Department.findOneAndUpdate({ _id: data.id },  { $set: data }, { new: true }).populate('reportingTo directManager assistantManager relatedSalaryAccount relatedExpenseAccount');
+        let result = await Department.findOneAndUpdate({ _id: data.id },  { $set: data }, { new: true }).populate('reportingTo directManager assistantManager');
         return res.status(200).send({ success: true, data: result });
     } catch (error) {
         return res.status(500).send({ error: true, message: error.message });
