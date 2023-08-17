@@ -64,7 +64,7 @@ exports.getPositionDetail = async (req, res) => {
 exports.updatePosition = async (req, res, next) => {
     let data = req.body;
     try {
-        let result = await Position.findOneAndUpdate({ _id: data.id }, { data }, { new: true }).populate('relatedDepartment')
+        let result = await Position.findOneAndUpdate({ _id: data.id }, { $set: data }, { new: true }).populate('relatedDepartment')
         return res.status(200).send({ success: true, data: result });
     } catch (error) {
         return res.status(500).send({ error: true, message: error.message });

@@ -64,7 +64,7 @@ exports.getDepartmentDetail = async (req, res) => {
 exports.updateDepartment = async (req, res, next) => {
     let data = req.body;
     try {
-        let result = await Department.findOneAndUpdate({ _id: data.id }, { data }, { new: true }).populate('reportingTo directManager assistantManager relatedSalaryAccount relatedExpenseAccount');
+        let result = await Department.findOneAndUpdate({ _id: data.id },  { $set: data }, { new: true }).populate('reportingTo directManager assistantManager relatedSalaryAccount relatedExpenseAccount');
         return res.status(200).send({ success: true, data: result });
     } catch (error) {
         return res.status(500).send({ error: true, message: error.message });
