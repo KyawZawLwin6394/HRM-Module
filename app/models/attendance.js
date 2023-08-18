@@ -20,8 +20,9 @@ let AttendanceSchema = new Schema({
   time: {
     type: String
   },
-  name: {
-    type: String
+  relatedUser: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref:'Users'
   },
   type: {
     type: String,
