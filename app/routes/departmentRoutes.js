@@ -16,5 +16,7 @@ module.exports = (app) => {
         .delete(verifyToken, catchError(department.deleteDepartment))
         .post(verifyToken, catchError(department.activateDepartment));
 
-    app.route('/api/departments').get(verifyToken, catchError(department.listAllDepartments));    
+    app.route('/api/departments').get(verifyToken, catchError(department.listAllDepartments));
+
+    app.route('/api/departments/org-chart').get(verifyToken, catchError(department.orgChart));
 };
