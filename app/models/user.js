@@ -94,7 +94,7 @@ let UserSchema = new Schema({
     type: Boolean,
     default: false
   },
-  marriedFile: {
+  married: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Attachments'
   },
