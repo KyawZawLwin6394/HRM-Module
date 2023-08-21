@@ -106,8 +106,15 @@ exports.listAllUsers = async (req, res) => {
 exports.getUserDetail = async (req, res) => {
   try {
     let result = await User.findById(req.params.id).populate(
-      'profile educationCertificate CV other recommendationLetter relatedDepartment relatedPosition married'
-    )
+      'profile educationCertificate CV other recommendationLetter relatedPosition married'
+    ).populate({
+      path:'relatedDepartment',
+      model:'Departments',
+      populate:{
+        path:'directManager',
+        model:'Users'
+      }
+    })
     if (!result)
       return res.status(500).json({ error: true, message: 'No record found.' })
     res.json({ success: true, data: result })
@@ -130,11 +137,10 @@ exports.updateUser = async (req, res, next) => {
       pf: 'profile',
       married:'married'
     }
-    console.log(files.married,'here')
+    console.log(files.other,'here')
     for (const type of attachmentTypes) {
       if (files[type]) {
         for (const item of files[type]) {
-          console.log(item, 'item')
           const imgPath = item.path.split('hrm')[1]
           const attachData = {
             fileName: item.originalname,
@@ -166,7 +172,6 @@ exports.updateUser = async (req, res, next) => {
         }
       }
     }
-    console.log(data)
     let result = await User.findOneAndUpdate(
       { _id: data.id },
       { $set: data },
