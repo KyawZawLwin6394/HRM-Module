@@ -47,31 +47,29 @@ let UserSchema = new Schema({
   educationBackground: {
     type: String
   },
-  profile: {
+  profile: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Attachments'
-  },
-  educationCertificate: {
+  }],
+  educationCertificate: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Attachments'
-  },
+  }],
   workExperience: {
     type: String
   },
-  CV: {
+  CV: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Attachments'
-  },
-  other: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Attachments'
-    }
-  ],
-  recommendationLetter: {
+  }],
+  other: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Attachments'
-  },
+  }],
+  recommendationLetter: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Attachments'
+  }],
   firstInterviewDate: {
     type: Date
   },
@@ -117,12 +115,9 @@ let UserSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now
-  },
-  profile: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Attachments'
   }
-})
+
+});
 const reasons = (UserSchema.statics.failedLogin = {
   NOT_FOUND: 0,
   PASSWORD_INCORRECT: 1,
