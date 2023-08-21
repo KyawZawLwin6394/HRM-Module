@@ -36,27 +36,21 @@ exports.createUser = async (req, res) => {
       }
     }
 
-    // for (const attachment of attachments) {
-    //   console.log(attachment.type)
-    //   data[attachmentMappings[attachment.type]] = attachments;
-    // }
-
     for (const attachment of attachments) {
       const { type, id } = attachment;
 
       if (attachmentTypes.includes(type)) {
         if (!data[type]) {
-          data[type] = [id]; // Initialize an array if it doesn't exist
+          data[attachmentMappings[type]] = [id]; // Initialize an array if it doesn't exist
         } else {
-          data[type].push(id); // Add the ID to the existing array
+          data[attachmentMappings[type]].push(id); // Add the ID to the existing array
         }
       }
     }
 
     console.log(data)
-    const newUser = new User(data);
-    const result = await newUser.save();
-
+    const result = await User.create(data)
+    console.log("User created:", result);
     res.status(200).send({
       success: true,
       data: result,
@@ -160,9 +154,9 @@ exports.updateUser = async (req, res, next) => {
 
       if (attachmentTypes.includes(type)) {
         if (!data[type]) {
-          data[type] = [id]; // Initialize an array if it doesn't exist
+          data[attachmentMappings[type]] = [id]; // Initialize an array if it doesn't exist
         } else {
-          data[type].push(id); // Add the ID to the existing array
+          data[attachmentMappings[type]].push(id); // Add the ID to the existing array
         }
       }
     }
