@@ -7,16 +7,16 @@ exports.createUser = async (req, res) => {
     const data = req.body
     const files = req.files
     const attachments = []
-    const attachmentTypes = ['cv', 'edu', 'recLet', 'other', 'pf', 'mf']
+    const attachmentTypes = ['cv', 'edu', 'recLet', 'other', 'pf', 'married']
     const attachmentMappings = {
       cv: 'CV',
       edu: 'educationCertificate',
       recLet: 'recommendationLetter',
       other: 'other',
       pf: 'profile',
-      mf: 'married'
+      married: 'married'
     }
-
+    console.log(files.married,'here')
     for (const type of attachmentTypes) {
       if (files[type]) {
         for (const item of files[type]) {
@@ -81,7 +81,7 @@ exports.listAllUsers = async (req, res) => {
       .skip(skip)
       .limit(limit)
       .populate(
-        'profile educationCertificate CV other recommendationLetter relatedDepartment relatedPosition'
+        'profile educationCertificate CV other recommendationLetter relatedDepartment relatedPosition married'
       )
     count = await User.find(query).count()
     const division = count / (rowsPerPage || limit)
@@ -106,7 +106,7 @@ exports.listAllUsers = async (req, res) => {
 exports.getUserDetail = async (req, res) => {
   try {
     let result = await User.findById(req.params.id).populate(
-      'profile educationCertificate CV other recommendationLetter relatedDepartment relatedPosition'
+      'profile educationCertificate CV other recommendationLetter relatedDepartment relatedPosition married'
     )
     if (!result)
       return res.status(500).json({ error: true, message: 'No record found.' })
@@ -121,15 +121,16 @@ exports.updateUser = async (req, res, next) => {
   const files = req.files
   try {
     const attachments = []
-    const attachmentTypes = ['cv', 'edu', 'recLet', 'other', 'pf']
+    const attachmentTypes = ['cv', 'edu', 'recLet', 'other', 'pf','married']
     const attachmentMappings = {
       cv: 'CV',
       edu: 'educationCertificate',
       recLet: 'recommendationLetter',
       other: 'other',
-      pf: 'profile'
+      pf: 'profile',
+      married:'married'
     }
-
+    console.log(files.married,'here')
     for (const type of attachmentTypes) {
       if (files[type]) {
         for (const item of files[type]) {

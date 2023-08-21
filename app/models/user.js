@@ -92,14 +92,10 @@ let UserSchema = new Schema({
     type: Boolean,
     default: false
   },
-  married: {
+  married: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Attachments'
-  },
-  directManager: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Departments'
-  },
+  }],
   relatedDepartment: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Departments'
