@@ -55,7 +55,9 @@ exports.listAllAttendances = async (req, res) => {
 
 exports.getAttendanceDetail = async (req, res) => {
   try {
-    let result = await Attendance.find({ _id: req.params.id }).populate('relatedDepartment relatedUser')
+    let result = await Attendance.find({ _id: req.params.id }).populate(
+      'relatedDepartment relatedUser'
+    )
     if (!result)
       return res.status(500).json({ error: true, message: 'No record found.' })
     res.json({ success: true, data: result })
@@ -69,7 +71,7 @@ exports.updateAttendance = async (req, res, next) => {
   try {
     let result = await Attendance.findOneAndUpdate(
       { _id: data.id },
-      { data },
+      { $set: data },
       { new: true }
     ).populate('relatedDepartment relatedUser')
     return res.status(200).send({ success: true, data: result })
