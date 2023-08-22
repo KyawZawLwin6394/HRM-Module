@@ -32,7 +32,7 @@ exports.listAllAttendances = async (req, res) => {
     let result = await Attendance.find(query)
       .skip(skip)
       .limit(limit)
-      .populate('relatedDepartment')
+      .populate('relatedDepartment relatedUser')
     count = await Attendance.find(query).count()
     const division = count / (rowsPerPage || limit)
     page = Math.ceil(division)
@@ -55,9 +55,7 @@ exports.listAllAttendances = async (req, res) => {
 
 exports.getAttendanceDetail = async (req, res) => {
   try {
-    let result = await Attendance.find({ _id: req.params.id }).populate(
-      'relatedDepartment'
-    )
+    let result = await Attendance.find({ _id: req.params.id }).populate('relatedDepartment relatedUser')
     if (!result)
       return res.status(500).json({ error: true, message: 'No record found.' })
     res.json({ success: true, data: result })
@@ -73,7 +71,7 @@ exports.updateAttendance = async (req, res, next) => {
       { _id: data.id },
       { data },
       { new: true }
-    ).populate('relatedDepartment')
+    ).populate('relatedDepartment relatedUser')
     return res.status(200).send({ success: true, data: result })
   } catch (error) {
     return res.status(500).send({ error: true, message: error.message })
