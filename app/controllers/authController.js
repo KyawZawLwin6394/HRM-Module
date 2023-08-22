@@ -29,7 +29,7 @@ exports.login = (req, res) => {
       user.comparePassword(req.body.password, function (err, user, reason) {
         if (user && user.isDeleted === true) {
           return res.status(403).send({
-            error: true,
+            error: true,  
             message: "This account is deactivated. Pls contact an admin to activate it again"
           })
         }

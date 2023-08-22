@@ -15,7 +15,7 @@ exports.createDepartment = async (req, res) => {
 };
 
 exports.listAllDepartments = async (req, res) => {
-    let { keyword, role, limit, skip, rowsPerPage } = req.query;
+    let { keyword, role, limit, skip, rowsPerPage, funct, level } = req.query;
     let count = 0;
     let page = 0;
     try {
@@ -28,7 +28,8 @@ exports.listAllDepartments = async (req, res) => {
             ? (regexKeyword = new RegExp(keyword, 'i'))
             : '';
         regexKeyword ? (query['name'] = regexKeyword) : '';
-
+        if (funct) query.function = funct;
+        if (level) query.level = level;
         let result = await Department.find(query).skip(skip).limit(limit).populate('reportingTo directManager assistantManager');
         count = await Department.find(query).count();
         const division = count / (rowsPerPage || limit);
