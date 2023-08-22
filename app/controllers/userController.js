@@ -16,7 +16,7 @@ exports.createUser = async (req, res) => {
       pf: 'profile',
       married: 'married'
     }
-    console.log(files.married,'here')
+    console.log(files.married, 'here')
     for (const type of attachmentTypes) {
       if (files[type]) {
         for (const item of files[type]) {
@@ -108,11 +108,11 @@ exports.getUserDetail = async (req, res) => {
     let result = await User.findById(req.params.id).populate(
       'profile educationCertificate CV other recommendationLetter relatedPosition married'
     ).populate({
-      path:'relatedDepartment',
-      model:'Departments',
-      populate:{
-        path:'directManager',
-        model:'Users'
+      path: 'relatedDepartment',
+      model: 'Departments',
+      populate: {
+        path: 'directManager',
+        model: 'Users'
       }
     })
     if (!result)
@@ -128,16 +128,17 @@ exports.updateUser = async (req, res, next) => {
   const files = req.files
   try {
     const attachments = []
-    const attachmentTypes = ['cv', 'edu', 'recLet', 'other', 'pf','married']
+    const attachmentTypes = ['cv', 'edu', 'recLet', 'other', 'pf', 'married']
     const attachmentMappings = {
       cv: 'CV',
       edu: 'educationCertificate',
       recLet: 'recommendationLetter',
       other: 'other',
       pf: 'profile',
-      married:'married'
+      married: 'married'
     }
-    console.log(files.other,'here')
+    console.log(files, 'here')
+    // console.log(data, 'data')
     for (const type of attachmentTypes) {
       if (files[type]) {
         for (const item of files[type]) {
@@ -172,9 +173,10 @@ exports.updateUser = async (req, res, next) => {
         }
       }
     }
+    console.log(data)
     let result = await User.findOneAndUpdate(
       { _id: data.id },
-      { $set: data },
+      data,
       {
         new: true
       }
