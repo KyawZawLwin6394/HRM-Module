@@ -87,7 +87,8 @@ exports.updateLeave = async (req, res, next) => {
     let files = req.files;
     let attachmentIDS = [];
     try {
-        if (files.attach) {
+        if (files['attach']) {
+            console.log('here')
             for (const item of files.attach) {
                 let imgPath = item.path.split('hrm')[1];
                 const attachData = {
