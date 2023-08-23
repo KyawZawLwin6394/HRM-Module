@@ -9,7 +9,6 @@ let LeaveSchema = new Schema({
         type: Date,
         default: Date.now
     },
-
     isDeleted: {
         type: Boolean,
         default: false
@@ -34,6 +33,10 @@ let LeaveSchema = new Schema({
     leaveType: {
         type: String,
         enum: ['Casual', 'Medical', 'Vacation', 'Maternity']
+    },
+    status: {
+        type: String,
+        enum: ['Approved', 'Declined']
     },
     attach: [{
         type: mongoose.Schema.Types.ObjectId,

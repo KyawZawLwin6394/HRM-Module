@@ -7,7 +7,8 @@ exports.createLeave = async (req, res) => {
     let files = req.files;
     let attachmentIDS = [];
     try {
-        if (files.attach) {
+        if (files['attach']) {
+            console.log('here')
             for (const item of files.attach) {
                 let imgPath = item.path.split('hrm')[1];
                 const attachData = {
@@ -19,8 +20,9 @@ exports.createLeave = async (req, res) => {
                 const attachResult = await newAttachment.save();
                 attachmentIDS.push(attachResult._id.toString())
             }
+            data = { ...data, attach: attachmentIDS };
         }
-        data = { ...data, attach: attachmentIDS };
+
         console.log(data, 'data')
         let result = await Leave.create(data);
         res.status(200).send({
@@ -97,8 +99,9 @@ exports.updateLeave = async (req, res, next) => {
                 const attachResult = await newAttachment.save();
                 attachmentIDS.push(attachResult._id.toString())
             }
+            data = { ...data, attach: attachmentIDS };
         }
-        data = { ...data, attach: attachmentIDS };
+
         console.log(data, 'data')
         let result = await Leave.findOneAndUpdate({ _id: data.id }, { $set: data }, { new: true }).populate('relatedUser relatedPosition attach');
         return res.status(200).send({ success: true, data: result });
