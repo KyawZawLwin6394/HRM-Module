@@ -1,5 +1,8 @@
 'use strict'
 const Attendance = require('../models/attendance')
+const UserUtil = require('../lib/userUtil')
+const path = require('path')
+
 exports.createAttendance = async (req, res) => {
   let data = req.body
   try {
@@ -105,6 +108,30 @@ exports.activateAttendance = async (req, res, next) => {
     return res
       .status(200)
       .send({ success: true, data: { isDeleted: result.isDeleted } })
+  } catch (error) {
+    return res.status(500).send({ error: true, message: error.message })
+  }
+}
+
+exports.excelImport = async (req, res) => {
+  try {
+    const files = req.files
+    if (!files.attendanceImport) return res.status(404).send({ error: true, message: 'File Not Found!' })
+    console.log(files.attendanceImport)
+    for (const i of files.attendanceImport) {
+      const subpath = path.join('app', 'controllers');  // Construct the subpath using the platform's path separator
+      const newPath = __dirname.replace(subpath, '');
+      const dest = path.join(newPath, i.path)
+      const data = await UserUtil.attendanceExcelImport(dest)
+      await Attendance.insertMany(data).then((response) => {
+        return res.status(200).send({
+          success: true, data: response
+        })
+      })
+        .catch(error => {
+          return res.status(500).send({ error: true, message: error })
+        })
+    }
   } catch (error) {
     return res.status(500).send({ error: true, message: error.message })
   }

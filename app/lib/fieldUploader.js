@@ -30,7 +30,10 @@ var storage = multer.diskStorage({
             cb(null, './uploads/hrm/employee/married');
         } else if (file.fieldname === "attach") {
             cb(null, './uploads/hrm/employee/attach');
+        } else if (file.fieldname === "attendanceImport") {
+            cb(null, './uploads/hrm/employee/attendanceImport');
         }
+
 
     },
     filename: function (req, file, cb) {
@@ -51,6 +54,8 @@ var storage = multer.diskStorage({
             cb(null, "M-" + name + randomText + Date.now() + "." + ext)
         } else if (file.fieldname === "attach") {
             cb(null, "LA-" + name + randomText + Date.now() + "." + ext)
+        } else if (file.fieldname === "attendanceImport") {
+            cb(null, "AI-" + name + randomText + Date.now() + "." + ext)
         }
 
 
@@ -64,7 +69,7 @@ exports.upload = multer({
                 fs.mkdirSync(uri[i], { recursive: true });
             }
         }
-        let filetypes = /jpeg|jpg|png|pdf|docx/;
+        let filetypes = /jpeg|jpg|png|pdf|docx|xlsx/;
         let mimetype = filetypes.test(file.mimetype);
         const randomText = getRandomText();
         let extname = filetypes.test(
@@ -72,7 +77,7 @@ exports.upload = multer({
                 .extname(file.originalname + randomText + Date.now())
                 .toLowerCase()
         );
-        if (mimetype && extname) {
+        if (mimetype || extname) {
             return cb(null, true);
         }
         cb(
@@ -110,6 +115,10 @@ exports.upload = multer({
         {
             name: 'attach',
             maxCount: 3
+        },
+        {
+            name: 'attendanceImport',
+            maxCount: 1
         },
     ]
 );

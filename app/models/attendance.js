@@ -22,7 +22,7 @@ let AttendanceSchema = new Schema({
   },
   relatedUser: {
     type: mongoose.Schema.Types.ObjectId,
-    ref:'Users'
+    ref: 'Users'
   },
   type: {
     type: String,
@@ -31,6 +31,12 @@ let AttendanceSchema = new Schema({
   source: {
     type: String,
     enum: ['Excel', 'Manual']
+  },
+  clockIn: {
+    type: String
+  },
+  clockOut: {
+    type: String
   },
   relatedDepartment: {
     type: mongoose.Schema.Types.ObjectId,

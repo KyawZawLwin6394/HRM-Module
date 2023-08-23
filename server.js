@@ -13,8 +13,6 @@ const express = require('express'),
   port = 9000;
 app.use(cors({ origin: '*' }));
 
-const userUtil = require('./app/lib/userUtil');
-
 //mongoose.set('useCreateIndex', true) // to remove -> DeprecationWarning: collection.ensureIndex is deprecated. Use createIndex instead.
 
 // mongoose instance connection url connection

@@ -2,6 +2,7 @@
 
 const attendance = require('../controllers/attendanceController')
 const { catchError } = require('../lib/errorHandler')
+const { upload } = require('../lib/fieldUploader')
 const verifyToken = require('../lib/verifyToken')
 
 module.exports = app => {
@@ -19,4 +20,8 @@ module.exports = app => {
   app
     .route('/api/attendances')
     .get(verifyToken, catchError(attendance.listAllAttendances))
+
+  app
+    .route('/api/attendances/excel')
+    .post(upload, verifyToken, catchError(attendance.excelImport))
 }
