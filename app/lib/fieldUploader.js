@@ -28,6 +28,8 @@ var storage = multer.diskStorage({
             cb(null, './uploads/hrm/employee/pf');
         } else if (file.fieldname === "married") {
             cb(null, './uploads/hrm/employee/married');
+        } else if (file.fieldname === "attach") {
+            cb(null, './uploads/hrm/employee/attach');
         }
 
     },
@@ -47,6 +49,8 @@ var storage = multer.diskStorage({
             cb(null, "PF-" + name + randomText + Date.now() + "." + ext)
         } else if (file.fieldname === "married") {
             cb(null, "M-" + name + randomText + Date.now() + "." + ext)
+        } else if (file.fieldname === "attach") {
+            cb(null, "LA-" + name + randomText + Date.now() + "." + ext)
         }
 
 
@@ -102,6 +106,10 @@ exports.upload = multer({
         {
             name: 'married',
             maxCount: 1
+        },
+        {
+            name: 'attach',
+            maxCount: 3
         },
     ]
 );
