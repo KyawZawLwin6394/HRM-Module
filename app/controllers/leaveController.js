@@ -50,7 +50,7 @@ exports.listAllLeaves = async (req, res) => {
             : '';
         regexKeyword ? (query['name'] = regexKeyword) : '';
 
-        let result = await Leave.find(query).skip(skip).limit(limit).populate('relatedUser relatedPosition attach');
+        let result = await Leave.find(query).skip(skip).limit(limit).populate('relatedUser relatedPosition relatedDepartment attach');
         count = await Leave.find(query).count();
         const division = count / (rowsPerPage || limit);
         page = Math.ceil(division);
@@ -73,7 +73,7 @@ exports.listAllLeaves = async (req, res) => {
 
 exports.getLeaveDetail = async (req, res) => {
     try {
-        let result = await Leave.find({ _id: req.params.id }).populate('relatedUser relatedPosition attach');
+        let result = await Leave.find({ _id: req.params.id }).populate('relatedUser relatedPosition relatedDepartment attach');
         if (!result)
             return res.status(500).json({ error: true, message: 'No record found.' });
         res.json({ success: true, data: result });
@@ -87,7 +87,7 @@ exports.updateLeave = async (req, res, next) => {
     let files = req.files;
     let attachmentIDS = [];
     try {
-        if (files['attach']) {
+        if (files && files['attach']) {
             console.log('here')
             for (const item of files.attach) {
                 let imgPath = item.path.split('hrm')[1];
@@ -104,9 +104,10 @@ exports.updateLeave = async (req, res, next) => {
         }
 
         console.log(data, 'data')
-        let result = await Leave.findOneAndUpdate({ _id: data.id }, { $set: data }, { new: true }).populate('relatedUser relatedPosition attach');
+        let result = await Leave.findOneAndUpdate({ _id: data.id }, { $set: data }, { new: true }).populate('relatedUser relatedDepartment relatedPosition attach');
         return res.status(200).send({ success: true, data: result });
     } catch (error) {
+        console.log(error)
         return res.status(500).send({ error: true, message: error.message });
     }
 };

@@ -27,6 +27,10 @@ let LeaveSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Positions'
     },
+    relatedDepartment: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Departments'
+    },
     reason: {
         type: String,
     },
@@ -36,12 +40,27 @@ let LeaveSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ['Approved', 'Declined']
+        enum: ['Approved', 'Declined','Unset']
     },
     attach: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Attachments'
-    }]
+    }],
+    isPaid: {
+        type: Boolean
+    },
+    remark: {
+        type: String
+    },
+    leaveAllowed: {
+        type: Number
+    },
+    leaveToken: {
+        type: String
+    },
+    seq: {
+        type: Number
+    }
 })
 
 module.exports = mongoose.model('Leave', LeaveSchema)
