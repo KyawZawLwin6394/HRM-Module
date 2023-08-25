@@ -13,6 +13,9 @@ let LeaveSchema = new Schema({
         type: Boolean,
         default: false
     },
+    code: {
+        type: String
+    },
     startDate: {
         type: Date
     },
@@ -23,24 +26,16 @@ let LeaveSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
     },
-    relatedPosition: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Positions'
-    },
-    relatedDepartment: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Departments'
-    },
     reason: {
         type: String,
     },
     leaveType: {
         type: String,
-        enum: ['Casual', 'Medical', 'Vacation', 'Maternity']
+        enum: ['Casual', 'Medical', 'Vacation', 'Maternity:Male', 'Maternity:Female']
     },
     status: {
         type: String,
-        enum: ['Approved', 'Declined','Unset']
+        enum: ['Approved', 'Declined', 'Unset']
     },
     attach: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -55,8 +50,8 @@ let LeaveSchema = new Schema({
     leaveAllowed: {
         type: Number
     },
-    leaveToken: {
-        type: String
+    leaveTaken: {
+        type: Number
     },
     seq: {
         type: Number

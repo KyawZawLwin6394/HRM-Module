@@ -11,6 +11,9 @@ let UserSchema = new Schema({
     type: String,
     required: true
   },
+  code: {
+    type: String
+  },
   email: {
     type: String
   },
@@ -111,6 +114,24 @@ let UserSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  seq: {
+    type: Number
+  },
+  casualLeaves: {
+    type: Number
+  },
+  medicalLeaves: {
+    type: Number
+  },
+  vacationLeaves: {
+    type: Number
+  },
+  maternityLeaveMale: {
+    type: Number
+  },
+  maternityLeaveFemale: {
+    type: Number
   }
 
 });

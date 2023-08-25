@@ -50,7 +50,21 @@ exports.listAllLeaves = async (req, res) => {
             : '';
         regexKeyword ? (query['name'] = regexKeyword) : '';
 
-        let result = await Leave.find(query).skip(skip).limit(limit).populate('relatedUser relatedPosition relatedDepartment attach');
+        const result = await Leave.find(query).skip(skip).limit(limit).populate('attach').populate({
+            path: 'relatedUser',
+            model: 'Users',
+            populate: [
+                {
+                    path: 'relatedDepartment',
+                    model: 'Departments'
+                },
+                {
+                    path: 'relatedPosition',
+                    model: 'Positions'
+                }
+            ]
+        });
+
         count = await Leave.find(query).count();
         const division = count / (rowsPerPage || limit);
         page = Math.ceil(division);
@@ -67,13 +81,27 @@ exports.listAllLeaves = async (req, res) => {
             data: result,
         });
     } catch (e) {
+        console.log(e)
         return res.status(500).send({ error: true, message: e.message });
     }
 };
 
 exports.getLeaveDetail = async (req, res) => {
     try {
-        let result = await Leave.find({ _id: req.params.id }).populate('relatedUser relatedPosition relatedDepartment attach');
+        let result = await Leave.find({ _id: req.params.id }).populate('attach').populate({
+            path: 'relatedUser',
+            model: 'Users',
+            populate: [
+                {
+                    path: 'relatedDepartment',
+                    model: 'Departments'
+                },
+                {
+                    path: 'relatedPosition',
+                    model: 'Positions'
+                }
+            ]
+        });;
         if (!result)
             return res.status(500).json({ error: true, message: 'No record found.' });
         res.json({ success: true, data: result });
@@ -104,7 +132,20 @@ exports.updateLeave = async (req, res, next) => {
         }
 
         console.log(data, 'data')
-        let result = await Leave.findOneAndUpdate({ _id: data.id }, { $set: data }, { new: true }).populate('relatedUser relatedDepartment relatedPosition attach');
+        let result = await Leave.findOneAndUpdate({ _id: data.id }, { $set: data }, { new: true }).populate('attach').populate({
+            path: 'relatedUser',
+            model: 'Users',
+            populate: [
+                {
+                    path: 'relatedDepartment',
+                    model: 'Departments'
+                },
+                {
+                    path: 'relatedPosition',
+                    model: 'Positions'
+                }
+            ]
+        });
         return res.status(200).send({ success: true, data: result });
     } catch (error) {
         console.log(error)
@@ -137,3 +178,17 @@ exports.activateLeave = async (req, res, next) => {
         return res.status(500).send({ error: true, message: error.message });
     }
 };
+
+exports.getCode = async (req, res) => {
+    try {
+        let today = new Date().toISOString()
+        const latestDocument = await Leave.find({}).sort({ seq: -1 }).limit(1).exec();
+        console.log(latestDocument, 'latestDocument')
+        if (latestDocument.length === 0 && latestDocument[0].seq === undefined)
+            return res.status(200).send({ seq: 1, code: "TVC-" + today.split('T')[0].replace(/-/g, '') + "-1" })
+        if (latestDocument.length > 0 && latestDocument[0].seq)
+            return res.status(200).send({ code: "LC-" + today.split('T')[0].replace(/-/g, '') + "-" + (latestDocument[0].seq + 1), seq: (latestDocument[0].seq + 1) })
+    } catch (error) {
+        return res.status(200).send({ error: true, message: error.message })
+    }
+}

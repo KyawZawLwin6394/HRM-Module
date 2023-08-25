@@ -18,4 +18,7 @@ module.exports = (app) => {
         .post(verifyToken, catchError(leave.activateLeave));
 
     app.route('/api/leaves').get(verifyToken, catchError(leave.listAllLeaves));
+
+    app.route('/api/leaves/code')
+        .get(verifyToken, catchError(leave.getCode));
 };
