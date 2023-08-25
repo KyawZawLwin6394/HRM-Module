@@ -6,6 +6,7 @@ exports.createLeave = async (req, res) => {
     let data = req.body;
     let files = req.files;
     let attachmentIDS = [];
+
     try {
         if (files['attach']) {
             console.log('here')
@@ -184,8 +185,10 @@ exports.getCode = async (req, res) => {
         let today = new Date().toISOString()
         const latestDocument = await Leave.find({}).sort({ seq: -1 }).limit(1).exec();
         console.log(latestDocument, 'latestDocument')
-        if (latestDocument.length === 0 && latestDocument[0].seq === undefined)
-            return res.status(200).send({ seq: 1, code: "TVC-" + today.split('T')[0].replace(/-/g, '') + "-1" })
+        if (latestDocument.length === 0 || latestDocument[0].seq === undefined) {
+            return res.status(200).send({ seq: 1, code: "LC-" + today.split('T')[0].replace(/-/g, '') + "-1" })
+        }
+
         if (latestDocument.length > 0 && latestDocument[0].seq)
             return res.status(200).send({ code: "LC-" + today.split('T')[0].replace(/-/g, '') + "-" + (latestDocument[0].seq + 1), seq: (latestDocument[0].seq + 1) })
     } catch (error) {
