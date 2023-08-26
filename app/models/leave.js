@@ -55,6 +55,10 @@ let LeaveSchema = new Schema({
     },
     seq: {
         type: Number
+    },
+    isCalculated: {
+        type: Boolean,
+        default: false
     }
 })
 

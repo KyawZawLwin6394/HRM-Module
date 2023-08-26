@@ -21,4 +21,7 @@ module.exports = (app) => {
 
     app.route('/api/leaves/code')
         .get(verifyToken, catchError(leave.getCode));
+
+    app.route('/api/leaves/status')
+        .put(verifyToken, catchError(leave.editStatus));
 };

@@ -1,6 +1,7 @@
 'use strict';
 const Leave = require('../models/leave');
 const Attachment = require('../models/attachment');
+const Employee = require('../models/user');
 
 exports.createLeave = async (req, res) => {
     let data = req.body;
@@ -153,6 +154,44 @@ exports.updateLeave = async (req, res, next) => {
         return res.status(500).send({ error: true, message: error.message });
     }
 };
+
+exports.editStatus = async (req, res) => {
+    try {
+        let data = req.body;
+        const { employeeID, Ltype, status, startDate, endDate, leaveAllowed } = req.body;
+        const employeePayload = {}
+        const checkIsCalculated = await Leave.findOne({ _id: data.id })
+        if (checkIsCalculated.isCalculated === true) return res.status(500).send({ error: true, message: 'Already Calculated!' })
+        //Time Difference
+        const timeDifference = Date.parse(endDate) - Date.parse(startDate)
+        const daysDifference = (timeDifference / (1000 * 3600 * 24)) + 1
+        //Preparing Payload
+        employeePayload[Ltype] = leaveAllowed - daysDifference
+        console.log(employeePayload, leaveAllowed, daysDifference)
+        if (status === 'Approved') {
+            const employeeUpdate = await Employee.findOneAndUpdate({ _id: employeeID }, { $set: employeePayload }, { new: true })
+            data = { ...data, isCalculated: true }
+        }
+        console.log(data)
+        const result = await Leave.findOneAndUpdate({ _id: data.id }, { $set: data }, { new: true }).populate('attach').populate({
+            path: 'relatedUser',
+            model: 'Users',
+            populate: [
+                {
+                    path: 'relatedDepartment',
+                    model: 'Departments'
+                },
+                {
+                    path: 'relatedPosition',
+                    model: 'Positions'
+                }
+            ]
+        });
+        return res.status(200).send({ success: true, data: result });
+    } catch (error) {
+        return res.status(500).send({ error: true, message: error.message });
+    }
+}
 
 exports.deleteLeave = async (req, res, next) => {
     try {
