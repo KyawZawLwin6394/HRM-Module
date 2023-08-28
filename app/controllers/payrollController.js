@@ -35,7 +35,7 @@ exports.listAllPayrolls = async (req, res) => {
       : '';
     regexKeyword ? (query['name'] = regexKeyword) : '';
     if (relatedDepartment) query.relatedDepartment = relatedDepartment
-    if (month) query.createdAt = await UserUtil.getDatesByMonth(month)
+    if (month) query.month = month
     console.log(query)
     let result = await Payroll.find(query).skip(skip).limit(limit).populate({
       path: 'relatedUser',
@@ -158,9 +158,9 @@ exports.calculatePayroll = async (req, res) => {
     console.log(month)
     if (employeeResult.length === 0) return res.status(404).send({ error: true, message: 'Employee Result Not Found!' })
     //preparing startDate and endDate
-    
+
     const datePayload = await UserUtil.getDatesByMonth(month)
-    
+
     for (const i of employeeResult) {
       const totalDays = new Date(datePayload.$lte).getUTCDate();
 
@@ -174,7 +174,7 @@ exports.calculatePayroll = async (req, res) => {
       const unpaidLeaves = unpaid.reduce((accumulator, current) => current.leaveTaken + accumulator, 0)
 
       const entitledSalary = (i.relatedPosition.basicSalary * (attendanceDays - unpaidLeaves)) / totalDays
-      insertPayload.push({ relatedUser: i._id, totalAttendance: attendanceDays, paidLeaves: paidLeaves, unpaidLeaves: unpaidLeaves, relatedDepartment: i.relatedDepartment._id, entitledSalary: Math.round(entitledSalary) })
+      insertPayload.push({ relatedUser: i._id, totalAttendance: attendanceDays, paidLeaves: paidLeaves, unpaidLeaves: unpaidLeaves, relatedDepartment: i.relatedDepartment._id, entitledSalary: Math.round(entitledSalary), month: month })
     };
 
     const PayrollInsert = await Payroll.insertMany(insertPayload)
