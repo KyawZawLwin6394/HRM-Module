@@ -25,7 +25,7 @@ async function attendanceExcelImport(filePath) {
             relatedUser: relatedUser?._id,
             clockIn: row.getCell(10).value,
             clockOut: row.getCell(11).value,
-            date:row.getCell(6).value,
+            date: row.getCell(6).value,
             type: 'Attend',
             source: 'Excel',
             relatedDepartment: relatedUser.relatedDepartment
@@ -77,4 +77,19 @@ async function bcryptCompare(plain, hash) {
   return result
 }
 
-module.exports = { bcryptHash, bcryptCompare, filterRequestAndResponse, sendEmail, attendanceExcelImport };
+async function getDatesByMonth(month) {
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  if (!months.includes(month)) return undefined;
+
+  const monthIndex = months.indexOf(month);
+  const startDate = new Date(Date.UTC(new Date().getFullYear(), monthIndex, 1));
+  const endDate = new Date(Date.UTC(new Date().getFullYear(), monthIndex + 1, 0, 23, 59, 59, 999));
+
+  console.log("Start Date:", startDate.toISOString());
+  console.log("End Date:", endDate.toISOString());
+  return ({ $gte: startDate.toISOString(), $lte: endDate.toISOString() })
+
+}
+
+module.exports = { bcryptHash, bcryptCompare, filterRequestAndResponse, sendEmail, attendanceExcelImport, getDatesByMonth };

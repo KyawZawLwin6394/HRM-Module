@@ -162,17 +162,18 @@ exports.editStatus = async (req, res) => {
         const employeePayload = {}
         const checkIsCalculated = await Leave.findOne({ _id: data.id })
         if (checkIsCalculated.isCalculated === true) return res.status(500).send({ error: true, message: 'Already Calculated!' })
-        //Time Difference
-        const timeDifference = Date.parse(endDate) - Date.parse(startDate)
-        const daysDifference = (timeDifference / (1000 * 3600 * 24)) + 1
-        //Preparing Payload
-        employeePayload[Ltype] = leaveAllowed - daysDifference
-        console.log(employeePayload, leaveAllowed, daysDifference)
+        if (leaveAllowed === 0 && status === 'Approved') return res.status(500).send({ error: true, message: 'No more leaves are allowed for this leave type!' })
         if (status === 'Approved') {
+            console.log('Calculated')
+            //Time Difference
+            const timeDifference = Date.parse(endDate) - Date.parse(startDate)
+            const daysDifference = (timeDifference / (1000 * 3600 * 24)) + 1
+            //Preparing Payload
+            employeePayload[Ltype] = leaveAllowed - daysDifference
+            console.log(employeePayload, leaveAllowed, daysDifference)
             const employeeUpdate = await Employee.findOneAndUpdate({ _id: employeeID }, { $set: employeePayload }, { new: true })
             data = { ...data, isCalculated: true }
         }
-        console.log(data)
         const result = await Leave.findOneAndUpdate({ _id: data.id }, { $set: data }, { new: true }).populate('attach').populate({
             path: 'relatedUser',
             model: 'Users',

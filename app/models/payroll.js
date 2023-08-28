@@ -14,33 +14,21 @@ let PayrollSchema = new Schema({
     type: Boolean,
     default: false
   },
-  date: {
-    type: Date
-  },
-  time: {
-    type: String
-  },
   relatedUser: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Users'
   },
-  type: {
-    type: String,
-    enum: ['Attend', 'Dismiss']
+  totalAttendance: {
+    type: Number
   },
-  source: {
-    type: String,
-    enum: ['Excel', 'Manual']
+  paidLeaves: {
+    type: Number
   },
-  clockIn: {
-    type: String
+  unpaidLeaves: {
+    type: Number
   },
-  clockOut: {
-    type: String
-  },
-  relatedDepartment: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Departments'
+  entitledSalary: {
+    type: Number
   }
 })
 
