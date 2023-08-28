@@ -18,6 +18,10 @@ let PayrollSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Users'
   },
+  relatedDepartment: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Departments'
+  },
   totalAttendance: {
     type: Number
   },

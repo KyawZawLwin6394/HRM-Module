@@ -78,7 +78,7 @@ async function bcryptCompare(plain, hash) {
 }
 
 async function getDatesByMonth(month) {
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   if (!months.includes(month)) return undefined;
 

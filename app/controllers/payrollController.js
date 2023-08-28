@@ -21,7 +21,7 @@ exports.createPayroll = async (req, res) => {
 };
 
 exports.listAllPayrolls = async (req, res) => {
-  let { keyword, role, limit, skip, rowsPerPage } = req.query;
+  let { keyword, role, limit, skip, rowsPerPage, month, relatedDepartment } = req.query;
   let count = 0;
   let page = 0;
   try {
@@ -34,7 +34,9 @@ exports.listAllPayrolls = async (req, res) => {
       ? (regexKeyword = new RegExp(keyword, 'i'))
       : '';
     regexKeyword ? (query['name'] = regexKeyword) : '';
-
+    if (relatedDepartment) query.relatedDepartment = relatedDepartment
+    if (month) query.createdAt = await UserUtil.getDatesByMonth(month)
+    console.log(query)
     let result = await Payroll.find(query).skip(skip).limit(limit).populate({
       path: 'relatedUser',
       model: 'Users',
@@ -150,13 +152,15 @@ exports.calculatePayroll = async (req, res) => {
     };
     let insertPayload = []
     const employeeResult = await Employee.find(payload).populate('relatedDepartment').populate({
-      path: 'relatedPayroll',
-      model: 'Payrolls'
+      path: 'relatedPosition',
+      model: 'Positions'
     });
+    console.log(month)
     if (employeeResult.length === 0) return res.status(404).send({ error: true, message: 'Employee Result Not Found!' })
     //preparing startDate and endDate
+    
     const datePayload = await UserUtil.getDatesByMonth(month)
-
+    
     for (const i of employeeResult) {
       const totalDays = new Date(datePayload.$lte).getUTCDate();
 
@@ -169,8 +173,8 @@ exports.calculatePayroll = async (req, res) => {
       const paidLeaves = paid.reduce((accumulator, current) => current.leaveTaken + accumulator, 0)
       const unpaidLeaves = unpaid.reduce((accumulator, current) => current.leaveTaken + accumulator, 0)
 
-      const entitledSalary = (i.relatedPayroll.basicSalary * (attendanceDays - unpaidLeaves)) / totalDays
-      insertPayload.push({ relatedUser: i._id, totalAttendance: attendanceDays, paidLeaves: paidLeaves, unpaidLeaves: unpaidLeaves, entitledSalary: Math.round(entitledSalary) })
+      const entitledSalary = (i.relatedPosition.basicSalary * (attendanceDays - unpaidLeaves)) / totalDays
+      insertPayload.push({ relatedUser: i._id, totalAttendance: attendanceDays, paidLeaves: paidLeaves, unpaidLeaves: unpaidLeaves, relatedDepartment: i.relatedDepartment._id, entitledSalary: Math.round(entitledSalary) })
     };
 
     const PayrollInsert = await Payroll.insertMany(insertPayload)
