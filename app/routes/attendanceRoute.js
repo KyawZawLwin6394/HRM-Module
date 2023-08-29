@@ -1,5 +1,6 @@
 'use strict'
 
+const { verify } = require('crypto')
 const attendance = require('../controllers/attendanceController')
 const { catchError } = require('../lib/errorHandler')
 const { upload } = require('../lib/fieldUploader')
@@ -24,4 +25,9 @@ module.exports = app => {
   app
     .route('/api/attendances/excel')
     .post(upload, verifyToken, catchError(attendance.excelImport))
+
+  app
+    .route('/api/attendances/mobile')
+    .get(verifyToken, catchError(attendance.mobileAttendanceLists))
+    .post(verifyToken, catchError(attendance.mobileAttendanceDetail))
 }

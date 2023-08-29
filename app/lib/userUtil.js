@@ -5,6 +5,8 @@ const Excel = require('exceljs');
 const User = require('../models/user');
 const workbook = new Excel.Workbook();
 
+const months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 async function attendanceExcelImport(filePath) {
   await workbook.xlsx.readFile(filePath);
   const worksheet = workbook.getWorksheet(1);
@@ -78,16 +80,12 @@ async function bcryptCompare(plain, hash) {
 }
 
 async function getDatesByMonth(month) {
-  const months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
   if (!months.includes(month)) return undefined;
 
   const monthIndex = months.indexOf(month);
   const startDate = new Date(Date.UTC(new Date().getFullYear(), monthIndex, 1));
   const endDate = new Date(Date.UTC(new Date().getFullYear(), monthIndex + 1, 0, 23, 59, 59, 999));
-
-  console.log("Start Date:", startDate.toISOString());
-  console.log("End Date:", endDate.toISOString());
+  
   return ({ $gte: startDate.toISOString(), $lte: endDate.toISOString() })
 
 }
