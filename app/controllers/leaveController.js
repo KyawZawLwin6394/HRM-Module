@@ -2,6 +2,7 @@
 const Leave = require('../models/leave');
 const Attachment = require('../models/attachment');
 const Employee = require('../models/user');
+const Attendance = require('../models/attendance');
 
 exports.createLeave = async (req, res) => {
     let data = req.body;
@@ -166,6 +167,7 @@ exports.editStatus = async (req, res) => {
         if (status === 'Approved') {
             console.log('Calculated')
             //Time Difference
+            const employee = await Employee.findOne({ _id: employeeID })
             const timeDifference = Date.parse(endDate) - Date.parse(startDate)
             const daysDifference = (timeDifference / (1000 * 3600 * 24)) + 1
             //Preparing Payload
@@ -173,7 +175,18 @@ exports.editStatus = async (req, res) => {
             console.log(employeePayload, leaveAllowed, daysDifference)
             const employeeUpdate = await Employee.findOneAndUpdate({ _id: employeeID }, { $set: employeePayload }, { new: true })
             data = { ...data, isCalculated: true }
-        }
+                for (let i = 0; i < daysDifference; i++) {
+                    const currentDate = new Date(startDate)
+                    currentDate.setDate(currentDate.getDate() + i)
+                    const AttendanceResult = await Attendance.create({
+                        type: 'Dismiss',
+                        source: 'Leave',
+                        date: currentDate,
+                        relatedUser: employeeID,
+                        relatedDepartment: employee.relatedDepartment
+                    })
+                }
+            }
         const result = await Leave.findOneAndUpdate({ _id: data.id }, { $set: data }, { new: true }).populate('attach').populate({
             path: 'relatedUser',
             model: 'Users',

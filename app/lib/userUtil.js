@@ -4,6 +4,7 @@ const config = require('../../config/db');
 const Excel = require('exceljs');
 const User = require('../models/user');
 const workbook = new Excel.Workbook();
+const moment = require('moment');
 
 const months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -20,9 +21,9 @@ async function attendanceExcelImport(filePath) {
         const employeeName = row.getCell(4).value
         const filtered = employeeName ? employeeName.split(' (KWD)')[0] : ''
         const relatedUser = await User.findOne({ givenName: filtered });
-        console.log(relatedUser, filtered)
+        // console.log(relatedUser, filtered)
         if (relatedUser) {
-          console.log(relatedUser)
+          // console.log(relatedUser)
           const rowData = {
             relatedUser: relatedUser?._id,
             clockIn: row.getCell(10).value,
@@ -85,7 +86,7 @@ async function getDatesByMonth(month) {
   const monthIndex = months.indexOf(month);
   const startDate = new Date(Date.UTC(new Date().getFullYear(), monthIndex, 1));
   const endDate = new Date(Date.UTC(new Date().getFullYear(), monthIndex + 1, 0, 23, 59, 59, 999));
-  
+
   return ({ $gte: startDate.toISOString(), $lte: endDate.toISOString() })
 
 }

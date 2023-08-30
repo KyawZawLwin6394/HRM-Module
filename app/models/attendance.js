@@ -30,7 +30,7 @@ let AttendanceSchema = new Schema({
   },
   source: {
     type: String,
-    enum: ['Excel', 'Manual']
+    enum: ['Excel', 'Manual','Leave']
   },
   clockIn: {
     type: String
