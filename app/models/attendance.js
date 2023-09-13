@@ -28,6 +28,10 @@ let AttendanceSchema = new Schema({
     type: String,
     enum: ['Week Day', 'Day Off']
   },
+  isPaid: {
+    type: Boolean,
+    default: true
+  },
   type: {
     type: String,
     enum: ['Attend', 'Dismiss']

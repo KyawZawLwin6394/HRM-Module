@@ -175,18 +175,19 @@ exports.editStatus = async (req, res) => {
             console.log(employeePayload, leaveAllowed, daysDifference)
             const employeeUpdate = await Employee.findOneAndUpdate({ _id: employeeID }, { $set: employeePayload }, { new: true })
             data = { ...data, isCalculated: true }
-                for (let i = 0; i < daysDifference; i++) {
-                    const currentDate = new Date(startDate)
-                    currentDate.setDate(currentDate.getDate() + i)
-                    const AttendanceResult = await Attendance.create({
-                        type: 'Dismiss',
-                        source: 'Leave',
-                        date: currentDate,
-                        relatedUser: employeeID,
-                        relatedDepartment: employee.relatedDepartment
-                    })
-                }
+            for (let i = 0; i < daysDifference; i++) {
+                const currentDate = new Date(startDate)
+                currentDate.setDate(currentDate.getDate() + i)
+                const AttendanceResult = await Attendance.create({
+                    type: 'Dismiss',
+                    source: 'Leave',
+                    isPaid: isPaid,
+                    date: currentDate,
+                    relatedUser: employeeID,
+                    relatedDepartment: employee.relatedDepartment
+                })
             }
+        }
         const result = await Leave.findOneAndUpdate({ _id: data.id }, { $set: data }, { new: true }).populate('attach').populate({
             path: 'relatedUser',
             model: 'Users',

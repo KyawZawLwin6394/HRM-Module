@@ -30,7 +30,9 @@ async function attendanceExcelImport(filePath) {
             clockOut: row.getCell(11).value,
             date: row.getCell(6).value,
             type: 'Attend',
+            attendType: 'Week Day',
             source: 'Excel',
+            isPaid: true,
             relatedDepartment: relatedUser.relatedDepartment
           };
           data.push(rowData);

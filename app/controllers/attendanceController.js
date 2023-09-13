@@ -40,10 +40,11 @@ exports.listAllAttendances = async (req, res) => {
     count = await Attendance.find(query).count()
     const division = count / (rowsPerPage || limit)
     page = Math.ceil(division)
-
+    let unpaid = await Attendance.find(query).count()
     res.status(200).send({
       success: true,
       count: count,
+      unpaidCount: unpaid,
       _metadata: {
         current_page: skip / limit + 1,
         per_page: limit,
@@ -160,7 +161,7 @@ exports.attendanceDetail = async (req, res) => {
     let result = await Attendance.find(query)
       .skip(skip)
       .limit(limit)
-      .sort({date: 1})
+      .sort({ date: 1 })
       .populate('relatedDepartment relatedUser')
     count = await Attendance.find(query).count()
     const division = count / (rowsPerPage || limit)
