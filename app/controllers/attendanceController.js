@@ -20,7 +20,7 @@ exports.createAttendance = async (req, res) => {
 }
 
 exports.listAllAttendances = async (req, res) => {
-  let { keyword, role, limit, skip, rowsPerPage, emp, dep } = req.query
+  let { keyword, role, limit, skip, rowsPerPage, } = req.query
   let count = 0
   let page = 0
   try {
@@ -33,7 +33,6 @@ exports.listAllAttendances = async (req, res) => {
       ? (regexKeyword = new RegExp(keyword, 'i'))
       : ''
     regexKeyword ? (query['name'] = regexKeyword) : ''
-    if (emp && dep) query = { ...query, relatedUser: emp, relatedDepartment: dep }
     let result = await Attendance.find(query)
       .skip(skip)
       .limit(limit)
@@ -136,6 +135,50 @@ exports.excelImport = async (req, res) => {
     }
   } catch (error) {
     return res.status(500).send({ error: true, message: error.message })
+  }
+}
+
+exports.attendanceDetail = async (req, res) => {
+  let { keyword, role, limit, skip, rowsPerPage, emp, dep, month } = req.query
+  let count = 0
+  let page = 0
+  try {
+    limit = +limit <= 100 ? +limit : 10
+    skip = +skip || 0
+    let query = { isDeleted: false },
+      regexKeyword
+    role ? (query['role'] = role.toUpperCase()) : ''
+    keyword && /\w/.test(keyword)
+      ? (regexKeyword = new RegExp(keyword, 'i'))
+      : ''
+    regexKeyword ? (query['name'] = regexKeyword) : ''
+    if (emp && dep) query = { ...query, relatedUser: emp, relatedDepartment: dep }
+    if (month) {
+      const result = await UserUtil.getDatesByMonth(month)
+      query.date = result
+    }
+    let result = await Attendance.find(query)
+      .skip(skip)
+      .limit(limit)
+      .sort({date: 1})
+      .populate('relatedDepartment relatedUser')
+    count = await Attendance.find(query).count()
+    const division = count / (rowsPerPage || limit)
+    page = Math.ceil(division)
+
+    res.status(200).send({
+      success: true,
+      count: count,
+      _metadata: {
+        current_page: skip / limit + 1,
+        per_page: limit,
+        page_count: page,
+        total_count: count
+      },
+      data: result
+    })
+  } catch (e) {
+    return res.status(500).send({ error: true, message: e.message })
   }
 }
 

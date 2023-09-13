@@ -24,13 +24,17 @@ let AttendanceSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Users'
   },
+  attendType: {
+    type: String,
+    enum: ['Week Day', 'Day Off']
+  },
   type: {
     type: String,
     enum: ['Attend', 'Dismiss']
   },
   source: {
     type: String,
-    enum: ['Excel', 'Manual','Leave']
+    enum: ['Excel', 'Manual', 'Leave']
   },
   clockIn: {
     type: String
@@ -41,6 +45,9 @@ let AttendanceSchema = new Schema({
   relatedDepartment: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Departments'
+  },
+  dismissReason: {
+    type: String
   }
 })
 
