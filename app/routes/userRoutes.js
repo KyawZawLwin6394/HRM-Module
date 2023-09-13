@@ -17,6 +17,10 @@ module.exports = (app) => {
     .delete(verifyToken, catchError(user.deleteUser))
     .post(verifyToken, catchError(user.activateUser));
 
+  app
+    .route('/api/users/department')
+    .get(verifyToken, catchError(user.getEmployeeByDepartmentID))
+
   app.route('/api/users').get(verifyToken, catchError(user.listAllUsers));
 
   app.route('/api/users/doctor').post(verifyToken, catchError(user.createDoctor))

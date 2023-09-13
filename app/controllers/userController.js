@@ -62,6 +62,18 @@ exports.createUser = async (req, res) => {
   }
 }
 
+exports.getEmployeeByDepartmentID = async (req, res) => {
+  const { dep } = req.query
+  try {
+    const employeeResult = await User.find({ relatedDepartment: dep })
+    if (employeeResult.length === 0) return res.status(404).send({ error: true, message: 'Not Found!' })
+    return res.status(200).send({ success: true, data: employeeResult })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send({ error: true, message: error.message })
+  }
+}
+
 exports.listAllUsers = async (req, res) => {
   let { keyword, role, limit, skip, rowsPerPage } = req.query
   let count = 0

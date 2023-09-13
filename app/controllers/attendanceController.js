@@ -20,7 +20,7 @@ exports.createAttendance = async (req, res) => {
 }
 
 exports.listAllAttendances = async (req, res) => {
-  let { keyword, role, limit, skip, rowsPerPage } = req.query
+  let { keyword, role, limit, skip, rowsPerPage, emp, dep } = req.query
   let count = 0
   let page = 0
   try {
@@ -33,7 +33,7 @@ exports.listAllAttendances = async (req, res) => {
       ? (regexKeyword = new RegExp(keyword, 'i'))
       : ''
     regexKeyword ? (query['name'] = regexKeyword) : ''
-
+    if (emp && dep) query = { ...query, relatedUser: emp, relatedDepartment: dep }
     let result = await Attendance.find(query)
       .skip(skip)
       .limit(limit)
