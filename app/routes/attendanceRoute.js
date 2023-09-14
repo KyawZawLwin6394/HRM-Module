@@ -27,6 +27,10 @@ module.exports = app => {
     .get(verifyToken, catchError(attendance.attendanceDetail))
 
   app
+    .route('/api/attendances/calculate')
+    .post(verifyToken, catchError(attendance.calculatePayroll))
+
+  app
     .route('/api/attendances/excel')
     .post(upload, verifyToken, catchError(attendance.excelImport))
 

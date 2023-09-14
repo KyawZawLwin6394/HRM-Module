@@ -187,6 +187,47 @@ exports.attendanceDetail = async (req, res) => {
   }
 }
 
+exports.calculatePayroll = async (req, res) => {
+  try {
+    const { dep, emp, basicSalary, month } = req.body;
+    if (dep && emp && basicSalary && month) {
+      const dates = await UserUtil.getDatesByMonth(month)
+      console.log(dates, dep, emp)
+      const result = await Attendance.find({ relatedDepartment: dep, relatedUser: emp, date: dates })
+        .sort({ date: 1 })
+        .populate('relatedDepartment relatedUser')
+      if (result.length === 0) return res.status(404).send({
+        error: true,
+        message: 'Not Found!',
+        data: {
+          entitledSalary: 0,
+          totalAttendance: 0,
+          paid: 0,
+          unpaid: 0
+        }
+      })
+      const totalAttendance = result.length
+      const unpaidCount = result.filter(item => item.isPaid === false).length
+      const paidCount = totalAttendance - unpaidCount //need to put time frame into consideration later down the line
+      const datePayload = await UserUtil.getDatesByMonth(month)
+      const totalDays = new Date(datePayload.$lte).getUTCDate();
+      console.log(totalDays)
+      const entitledSalary = (basicSalary * paidCount) / totalDays;
+      return res.status(200).send({
+        success: true, data: {
+          entitledSalary: entitledSalary,
+          totalAttendance: totalAttendance,
+          paid: paidCount,
+          unpaid: unpaidCount
+        }
+      })
+    } else return res.status(500).send({ error: true, message: 'Department, Employee, Month and BasicSalary is needed!' })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send({ error: true, message: error.message })
+  }
+}
+
 exports.mobileAttendanceLists = async (req, res) => {
   try {
     const { relatedEmployee } = req.query
