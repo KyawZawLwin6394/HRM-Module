@@ -19,6 +19,10 @@ exports.createAttendance = async (req, res) => {
   }
 }
 
+exports.attendancePayRoll = async (req, res) => {
+
+}
+
 exports.listAllAttendances = async (req, res) => {
   let { keyword, role, limit, skip, rowsPerPage, } = req.query
   let count = 0
@@ -166,7 +170,7 @@ exports.attendanceDetail = async (req, res) => {
     count = await Attendance.find(query).count()
     const division = count / (rowsPerPage || limit)
     page = Math.ceil(division)
-
+    const unpaid = result.filter(item => item.isPaid === false)
     res.status(200).send({
       success: true,
       count: count,
