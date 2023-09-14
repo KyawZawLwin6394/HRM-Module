@@ -159,7 +159,7 @@ exports.updateLeave = async (req, res, next) => {
 exports.editStatus = async (req, res) => {
     try {
         let data = req.body;
-        const { employeeID, Ltype, status, startDate, endDate, leaveAllowed } = req.body;
+        const { employeeID, Ltype, status, startDate, endDate, leaveAllowed, isPaid } = req.body;
         const employeePayload = {}
         const checkIsCalculated = await Leave.findOne({ _id: data.id })
         if (checkIsCalculated.isCalculated === true) return res.status(500).send({ error: true, message: 'Already Calculated!' })
