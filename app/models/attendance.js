@@ -26,7 +26,7 @@ let AttendanceSchema = new Schema({
   },
   attendType: {
     type: String,
-    enum: ['Week Day', 'Day Off']
+    enum: ['Week Day', 'Day Off', 'Holiday']
   },
   isPaid: {
     type: Boolean,
