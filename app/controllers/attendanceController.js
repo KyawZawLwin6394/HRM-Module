@@ -2,7 +2,8 @@
 const Attendance = require('../models/attendance');
 const UserUtil = require('../lib/userUtil');
 const path = require('path');
-const Employee = require('../models/user')
+const Employee = require('../models/user');
+const RuleUtil = require('../lib/ruleUtils')
 const months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 exports.createAttendance = async (req, res) => {
@@ -190,12 +191,15 @@ exports.attendanceDetail = async (req, res) => {
 exports.calculatePayroll = async (req, res) => {
   try {
     const { dep, emp, basicSalary, month } = req.body;
+    const datePayload = await UserUtil.getDatesByMonth(month)
+    const totalDays = new Date(datePayload.$lte).getUTCDate(); //total days for this month
+
     if (dep && emp && basicSalary && month) {
-      const dates = await UserUtil.getDatesByMonth(month)
-      console.log(dates, dep, emp)
+      const dates = await UserUtil.getDatesByMonth(month) //get gte and lte
       const result = await Attendance.find({ relatedDepartment: dep, relatedUser: emp, date: dates })
         .sort({ date: 1 })
         .populate('relatedDepartment relatedUser')
+
       if (result.length === 0) return res.status(404).send({
         error: true,
         message: 'Not Found!',
@@ -206,19 +210,28 @@ exports.calculatePayroll = async (req, res) => {
           unpaid: 0
         }
       })
+
       const totalAttendance = result.length
-      const unpaidCount = result.filter(item => item.isPaid === false).length
-      const paidCount = totalAttendance - unpaidCount //need to put time frame into consideration later down the line
-      const datePayload = await UserUtil.getDatesByMonth(month)
-      const totalDays = new Date(datePayload.$lte).getUTCDate();
-      console.log(totalDays)
-      const entitledSalary = (basicSalary * paidCount) / totalDays;
+      const salaryPerDay = basicSalary / totalDays
+
+      const attendedDays = result.filter(item => item.isPaid === true && item.type === 'Attend')
+      const attendedSalary = RuleUtil.calculatePayroll(attendedDays, salaryPerDay)
+      if (attendedSalary.success === false) return res.status(500).send({ error: true, message: attendedSalary.message })
+
+      const dimissDays = result.filter(item => item.isPaid === false && item.type === 'Dismiss')
+
+      const dismissedSalary = RuleUtil.calculatePayroll(dimissDays, salaryPerDay)
+      if (dismissedSalary.success === false) return res.status(500).send({ error: true, message: dismissedSalary.message })
+
+      const paidCount = totalAttendance - dimissDays.length
       return res.status(200).send({
         success: true, data: {
-          entitledSalary: entitledSalary,
+          attendedSalary: attendedSalary.salary,
+          dismissedSalary: dismissedSalary.salary,
+          entitledSalary: attendedSalary.salary - (dismissedSalary.salary || 0),
           totalAttendance: totalAttendance,
           paid: paidCount,
-          unpaid: unpaidCount
+          unpaid: dimissDays.length
         }
       })
     } else return res.status(500).send({ error: true, message: 'Department, Employee, Month and BasicSalary is needed!' })

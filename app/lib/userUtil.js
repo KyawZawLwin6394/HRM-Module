@@ -93,4 +93,8 @@ async function getDatesByMonth(month) {
 
 }
 
-module.exports = { bcryptHash, bcryptCompare, filterRequestAndResponse, sendEmail, attendanceExcelImport, getDatesByMonth };
+async function entitledSalaryCalculation(attendances, totalDays, salaryPerDay) {
+  let entitledSalary = 0
+}
+
+module.exports = { entitledSalaryCalculation, bcryptHash, bcryptCompare, filterRequestAndResponse, sendEmail, attendanceExcelImport, getDatesByMonth };
