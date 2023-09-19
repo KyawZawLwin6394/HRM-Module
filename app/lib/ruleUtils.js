@@ -33,9 +33,14 @@ exports.calculatePayroll = (attendances, salaryPerDay) => {
     try {
         const paid = attendances.filter(item => item.isPaid === true) //including Attend and Dismiss
         const entitledSalary = paid.reduce((accumulator, day) => {
-            const result = checkEmployeeAttendance(day.clockIn, "09:30", "10:00", "11:00", salaryPerDay)
-            console.log(result, 'salary')
-            return accumulator + result
+            if (day.clockIn) {
+                const result = checkEmployeeAttendance(day.clockIn, "09:30", "10:00", "11:00", salaryPerDay)
+                console.log(result, 'salary')
+                return accumulator + result
+            } else {
+                return accumulator
+            }
+
         }, 0)
         return ({ success: true, salary: entitledSalary })
     } catch (error) {

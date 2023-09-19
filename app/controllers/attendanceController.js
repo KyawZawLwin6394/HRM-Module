@@ -204,6 +204,8 @@ exports.calculatePayroll = async (req, res) => {
         error: true,
         message: 'Not Found!',
         data: {
+          attendedSalary: 0,
+          dismissedSalary: 0,
           entitledSalary: 0,
           totalAttendance: 0,
           paid: 0,
@@ -218,7 +220,7 @@ exports.calculatePayroll = async (req, res) => {
       const attendedSalary = RuleUtil.calculatePayroll(attendedDays, salaryPerDay)
       if (attendedSalary.success === false) return res.status(500).send({ error: true, message: attendedSalary.message })
 
-      const dimissDays = result.filter(item => item.isPaid === false && item.type === 'Dismiss')
+      const dimissDays = result.filter(item => item.isPaid === false && item.type === 'Dismiss' )
 
       const dismissedSalary = RuleUtil.calculatePayroll(dimissDays, salaryPerDay)
       if (dismissedSalary.success === false) return res.status(500).send({ error: true, message: dismissedSalary.message })

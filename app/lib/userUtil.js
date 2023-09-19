@@ -22,7 +22,7 @@ async function attendanceExcelImport(filePath) {
         const filtered = employeeName ? employeeName.split(' (KWD)')[0] : ''
         const relatedUser = await User.findOne({ givenName: filtered });
         // console.log(relatedUser, filtered)
-        if (relatedUser) {
+        if (relatedUser && row.getCell(10).value) {
           // console.log(relatedUser)
           const rowData = {
             relatedUser: relatedUser?._id,
@@ -33,6 +33,19 @@ async function attendanceExcelImport(filePath) {
             attendType: 'Week Day',
             source: 'Excel',
             isPaid: true,
+            relatedDepartment: relatedUser.relatedDepartment
+          };
+          data.push(rowData);
+        } else if (relatedUser && row.getCell(10).value === '') {
+          console.log('undefined')
+          const rowData = {
+            relatedUser: relatedUser?._id,
+            clockIn: row.getCell(10).value,
+            clockOut: row.getCell(11).value,
+            date: row.getCell(6).value,
+            type: 'Dismiss',
+            source: 'Excel',
+            isPaid: false,
             relatedDepartment: relatedUser.relatedDepartment
           };
           data.push(rowData);
