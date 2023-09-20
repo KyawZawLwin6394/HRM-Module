@@ -22,6 +22,7 @@ let PayrollSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Departments'
   },
+  
   totalAttendance: {
     type: Number
   },
@@ -33,6 +34,14 @@ let PayrollSchema = new Schema({
   },
   entitledSalary: {
     type: Number
+  },
+  paidDays: {
+    type: Number,
+    default: 0
+  },
+  unpaidDays: {
+    type: Number,
+    default: 0
   },
   attendedSalary: {
     type: Number,

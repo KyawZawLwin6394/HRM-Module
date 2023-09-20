@@ -235,6 +235,8 @@ exports.calculatePayroll = async (req, res) => {
           totalAttendance: totalAttendance,
           attendedSalary: attendedSalary.salary,
           dismissedSalary: dismissedSalary.salary,
+          paidDays: paidCount,
+          unpaidDays: dimissDays.length,
           month: month
         })
         console.log(payrollCreate)
