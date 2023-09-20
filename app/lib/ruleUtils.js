@@ -1,5 +1,22 @@
 'use strict';
-const moment = require('moment')
+const moment = require('moment-timezone');
+const config = require('../../config/db')
+
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function convertAndDisplayTZ(utcDate) {
+    return moment.utc(utcDate).tz(config.timeZone).format('D-M-Y');
+}
+
+function convertToWeekDayNames(utcDate) {
+    return moment.utc(utcDate).tz(config.timeZone).format('ddd');
+}
+
+function attendanceInputDate(utcDate) {
+    return moment.utc(utcDate).tz(config.timeZone).format('YYYY-MM-DD');
+}
 
 function checkEmployeeAttendance(inputTimeStr, lateTimeStr, secLateTimeStr, halfDayTimeStr, salaryPerDay) {
     const [inputHours, inputMinutes] = inputTimeStr.split(":").map(Number);
@@ -33,10 +50,15 @@ exports.calculatePayroll = (attendances, salaryPerDay) => {
     try {
         const paid = attendances.filter(item => item.isPaid === true) //including Attend and Dismiss
         const entitledSalary = paid.reduce((accumulator, day) => {
-            if (day.clockIn) {
+            const dayName = convertToWeekDayNames(day.date)
+            console.log(dayName)
+            if (day.clockIn && dayName !== 'Sun') {
                 const result = checkEmployeeAttendance(day.clockIn, "09:30", "10:00", "11:00", salaryPerDay)
-                console.log(result, 'salary')
+                //console.log(result, 'salary', dayName)
                 return accumulator + result
+            } else if (dayName === 'Sun') {
+                console.log(salaryPerDay, 'salary', dayName)
+                return accumulator + salaryPerDay
             } else {
                 return accumulator
             }

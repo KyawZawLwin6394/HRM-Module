@@ -3,7 +3,8 @@ const Attendance = require('../models/attendance');
 const UserUtil = require('../lib/userUtil');
 const path = require('path');
 const Employee = require('../models/user');
-const RuleUtil = require('../lib/ruleUtils')
+const RuleUtil = require('../lib/ruleUtils');
+const PayRoll = require('../models/payroll');
 const months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 exports.createAttendance = async (req, res) => {
@@ -190,7 +191,7 @@ exports.attendanceDetail = async (req, res) => {
 
 exports.calculatePayroll = async (req, res) => {
   try {
-    const { dep, emp, basicSalary, month } = req.body;
+    const { dep, emp, basicSalary, month, saveStatus } = req.body;
     const datePayload = await UserUtil.getDatesByMonth(month)
     const totalDays = new Date(datePayload.$lte).getUTCDate(); //total days for this month
 
@@ -220,12 +221,24 @@ exports.calculatePayroll = async (req, res) => {
       const attendedSalary = RuleUtil.calculatePayroll(attendedDays, salaryPerDay)
       if (attendedSalary.success === false) return res.status(500).send({ error: true, message: attendedSalary.message })
 
-      const dimissDays = result.filter(item => item.isPaid === false && item.type === 'Dismiss' )
+      const dimissDays = result.filter(item => item.isPaid === false && item.type === 'Dismiss')
 
       const dismissedSalary = RuleUtil.calculatePayroll(dimissDays, salaryPerDay)
       if (dismissedSalary.success === false) return res.status(500).send({ error: true, message: dismissedSalary.message })
 
       const paidCount = totalAttendance - dimissDays.length
+      if (saveStatus === true) {
+        const payrollCreate = await PayRoll.create({
+          entitledSalary: attendedSalary.salary - (dismissedSalary.salary || 0),
+          relatedUser: emp,
+          relatedDepartment: dep,
+          totalAttendance: totalAttendance,
+          attendedSalary: attendedSalary.salary,
+          dismissedSalary: dismissedSalary.salary,
+          month: month
+        })
+        console.log(payrollCreate)
+      }
       return res.status(200).send({
         success: true, data: {
           attendedSalary: attendedSalary.salary,

@@ -34,6 +34,14 @@ let PayrollSchema = new Schema({
   entitledSalary: {
     type: Number
   },
+  attendedSalary: {
+    type: Number,
+    default: 0
+  },
+  dismissedSalary: {
+    type: Number,
+    default: 0
+  },
   month: {
     type: String,
     enum: ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']

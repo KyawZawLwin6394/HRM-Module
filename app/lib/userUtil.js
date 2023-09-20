@@ -36,20 +36,21 @@ async function attendanceExcelImport(filePath) {
             relatedDepartment: relatedUser.relatedDepartment
           };
           data.push(rowData);
-        } else if (relatedUser && row.getCell(10).value === '') {
-          console.log('undefined')
-          const rowData = {
-            relatedUser: relatedUser?._id,
-            clockIn: row.getCell(10).value,
-            clockOut: row.getCell(11).value,
-            date: row.getCell(6).value,
-            type: 'Dismiss',
-            source: 'Excel',
-            isPaid: false,
-            relatedDepartment: relatedUser.relatedDepartment
-          };
-          data.push(rowData);
-        }
+        } 
+        // else if (relatedUser && row.getCell(10).value === '') {
+        //   console.log('undefined')
+        //   const rowData = {
+        //     relatedUser: relatedUser?._id,
+        //     clockIn: row.getCell(10).value,
+        //     clockOut: row.getCell(11).value,
+        //     date: row.getCell(6).value,
+        //     type: 'Dismiss',
+        //     source: 'Excel',
+        //     isPaid: false,
+        //     relatedDepartment: relatedUser.relatedDepartment
+        //   };
+        //   data.push(rowData);
+        // }
       } catch (error) {
         console.error("Error processing row:", error);
       }

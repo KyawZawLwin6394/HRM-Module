@@ -17,6 +17,7 @@ const config = {
     jwtSecret: 'McQTEUrP=ut*Cr1e4trEDO$q796tEDHz+Sf9@0#YpKFMDZmHR@th5y=7VJtcXk3WU',
     jwtKey: 'm*qf63GOeu9*9oDetCb63Y',
     defaultPasswordExpire: 86400,
+    timeZone: "Asia/Yangon"
   },
 
   production: {
@@ -33,6 +34,7 @@ const config = {
     jwtSecret: 'McQTEUrP=ut*Cr1e4trEDO$q796tEDHz+Sf9@0#YpKFMDZmHR@th5y=7VJtcXk3WU',
     jwtKey: 'm*qf63GOeu9*9oDetCb63Y',
     defaultPasswordExpire: 86400,
+    timeZone: "Asia/Yangon"
   },
 };
 
