@@ -228,24 +228,29 @@ exports.calculatePayroll = async (req, res) => {
 
       const paidCount = totalAttendance - dimissDays.length
       if (saveStatus === true) {
-        const payrollCreate = await PayRoll.create({
-          entitledSalary: attendedSalary.salary - (dismissedSalary.salary || 0),
-          relatedUser: emp,
-          relatedDepartment: dep,
-          totalAttendance: totalAttendance,
-          attendedSalary: attendedSalary.salary,
-          dismissedSalary: dismissedSalary.salary,
-          paidDays: paidCount,
-          unpaidDays: dimissDays.length,
-          month: month
-        })
-        console.log(payrollCreate)
+        // check if payroll exists
+        const payroll = await PayRoll.find({ relatedUser: emp, relatedDepartment: dep, month: month })
+        if (payroll.length === 0) {
+          const payrollCreate = await PayRoll.create({
+            entitledSalary: Math.round(attendedSalary.salary - (dismissedSalary.salary || 0)),
+            relatedUser: emp,
+            relatedDepartment: dep,
+            totalAttendance: totalAttendance,
+            attendedSalary: Math.round(attendedSalary.salary),
+            dismissedSalary: Math.round(dismissedSalary.salary),
+            paidDays: paidCount,
+            unpaidDays: dimissDays.length,
+            month: month
+          })
+          console.log(payrollCreate)
+        }
+
       }
       return res.status(200).send({
         success: true, data: {
-          attendedSalary: attendedSalary.salary,
-          dismissedSalary: dismissedSalary.salary,
-          entitledSalary: attendedSalary.salary - (dismissedSalary.salary || 0),
+          attendedSalary: Math.round(attendedSalary.salary),
+          dismissedSalary: Math.round(dismissedSalary.salary),
+          entitledSalary: Math.round(attendedSalary.salary - (dismissedSalary.salary || 0)),
           totalAttendance: totalAttendance,
           paid: paidCount,
           unpaid: dimissDays.length
