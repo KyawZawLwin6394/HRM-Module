@@ -119,6 +119,10 @@ let PayrollSchema = new Schema({
   month: {
     type: String,
     enum: ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  },
+  isExtra: {
+    type: Boolean,
+    default: false
   }
 })
 

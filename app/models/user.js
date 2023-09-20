@@ -132,6 +132,9 @@ let UserSchema = new Schema({
   },
   maternityLeaveFemale: {
     type: Number
+  },
+  isCRM: {
+    type: Boolean
   }
 
 });

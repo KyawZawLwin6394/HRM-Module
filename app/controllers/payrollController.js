@@ -95,6 +95,29 @@ exports.getPayrollDetail = async (req, res) => {
   }
 };
 
+exports.payExtra = async (req, res) => {
+  try {
+    const data = { ...req.body, isExtra: true }
+    const update = await Payroll.findOneAndUpdate({ _id: data.id }, data, { new: true }).populate({
+      path: 'relatedUser',
+      model: 'Users',
+      populate: [
+        {
+          path: 'relatedPosition',
+          model: 'Positions'
+        },
+        {
+          path: 'relatedDepartment',
+          model: 'Departments'
+        }
+      ]
+    })
+    return res.status(200).send({ success: true, data: result });
+  } catch (error) {
+    return res.status(500).send({ error: true, message: error.message });
+  }
+}
+
 exports.updatePayroll = async (req, res, next) => {
   let data = req.body;
   try {
