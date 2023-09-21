@@ -46,24 +46,24 @@ function isLate(inputHours, inputMinutes, thresholdTimeStr) {
     return inputHours > thresholdHours || (inputHours === thresholdHours && inputMinutes > thresholdMinutes);
 }
 
-exports.calculatePayroll = (attendances, salaryPerDay) => {
+exports.calculatePayroll = (attendances, salaryPerDay, workingDays) => {
     try {
         const paid = attendances.filter(item => item.isPaid === true) //including Attend and Dismiss
         const entitledSalary = paid.reduce((accumulator, day) => {
             const dayName = convertToWeekDayNames(day.date)
             console.log(dayName)
-            if (day.clockIn && dayName !== 'Sun') {
+            if (day.clockIn && workingDays.includes(dayName)) {
                 const result = checkEmployeeAttendance(day.clockIn, "09:30", "10:00", "11:00", salaryPerDay)
                 //console.log(result, 'salary', dayName)
                 return accumulator + result
-            } else if (dayName === 'Sun') {
-                console.log(salaryPerDay, 'salary', dayName)
+            } else if (workingDays.includes(dayName) === false) {
                 return accumulator + salaryPerDay
-            } else {
+            } else if (workingDays.includes(dayName) === true && day.clockIn === '') {
                 return accumulator
             }
 
         }, 0)
+        console.log(entitledSalary)
         return ({ success: true, salary: entitledSalary })
     } catch (error) {
         return ({ success: false, message: error.message })

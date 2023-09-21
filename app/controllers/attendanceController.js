@@ -188,10 +188,11 @@ exports.attendanceDetail = async (req, res) => {
 exports.calculatePayroll = async (req, res) => {
   try {
     const { dep, emp, basicSalary, month, saveStatus } = req.body;
-    const datePayload = await UserUtil.getDatesByMonth(month)
-    const totalDays = new Date(datePayload.$lte).getUTCDate(); //total days for this month
+    //total days for this month
 
     if (dep && emp && basicSalary && month) {
+      const datePayload = await UserUtil.getDatesByMonth(month)
+      const totalDays = new Date(datePayload.$lte).getUTCDate();
       const dates = await UserUtil.getDatesByMonth(month) //get gte and lte
       const result = await Attendance.find({ relatedDepartment: dep, relatedUser: emp, date: dates })
         .sort({ date: 1 })
