@@ -112,7 +112,7 @@ exports.payExtra = async (req, res) => {
         }
       ]
     })
-    return res.status(200).send({ success: true, data: result });
+    return res.status(200).send({ success: true, data: update });
   } catch (error) {
     return res.status(500).send({ error: true, message: error.message });
   }

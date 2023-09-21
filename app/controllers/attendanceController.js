@@ -21,10 +21,6 @@ exports.createAttendance = async (req, res) => {
   }
 }
 
-exports.attendancePayRoll = async (req, res) => {
-
-}
-
 exports.listAllAttendances = async (req, res) => {
   let { keyword, role, limit, skip, rowsPerPage, } = req.query
   let count = 0
@@ -216,14 +212,16 @@ exports.calculatePayroll = async (req, res) => {
 
       const totalAttendance = result.length
       const salaryPerDay = basicSalary / totalDays
-
+      const getWorkingDays = await Employee.findOne({ _id: emp }).populate('relatedPosition')
+      const workingDays = getWorkingDays.relatedPosition.workingDay
+      console.log(workingDays, 'working days')
       const attendedDays = result.filter(item => item.isPaid === true && item.type === 'Attend')
-      const attendedSalary = RuleUtil.calculatePayroll(attendedDays, salaryPerDay)
+      const attendedSalary = RuleUtil.calculatePayroll(attendedDays, salaryPerDay, workingDays)
       if (attendedSalary.success === false) return res.status(500).send({ error: true, message: attendedSalary.message })
 
       const dimissDays = result.filter(item => item.isPaid === false && item.type === 'Dismiss')
 
-      const dismissedSalary = RuleUtil.calculatePayroll(dimissDays, salaryPerDay)
+      const dismissedSalary = RuleUtil.calculatePayroll(dimissDays, salaryPerDay, workingDays)
       if (dismissedSalary.success === false) return res.status(500).send({ error: true, message: dismissedSalary.message })
 
       const paidCount = totalAttendance - dimissDays.length

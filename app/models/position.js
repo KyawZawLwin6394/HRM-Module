@@ -56,10 +56,9 @@ let PositionSchema = new Schema({
     travelAllowance: {
         type: Number
     },
-    workingDay: {
-        type: String,
-        enum: ['M-F', 'M-S', 'All Day']
-    },
+    workingDay: [{
+        type: String
+    }],
     workingFrom: {
         type: String
     },

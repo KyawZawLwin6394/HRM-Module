@@ -4,7 +4,9 @@ const config = require('../../config/db');
 const Excel = require('exceljs');
 const User = require('../models/user');
 const workbook = new Excel.Workbook();
-const moment = require('moment');
+const moment = require('moment-timezone');
+
+
 
 const months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -13,7 +15,7 @@ async function attendanceExcelImport(filePath) {
   const worksheet = workbook.getWorksheet(1);
   const data = [];
 
-  const rows = worksheet.getRows(2, worksheet.actualRowCount);
+  const rows = worksheet.getRows(1, worksheet.actualRowCount);
   for (const row of rows) {
     if (row.getCell(2).value, 'here') {
       let treatmentName = row.getCell(7).value;
@@ -22,7 +24,7 @@ async function attendanceExcelImport(filePath) {
         const filtered = employeeName ? employeeName.split(' (KWD)')[0] : ''
         const relatedUser = await User.findOne({ givenName: filtered });
         // console.log(relatedUser, filtered)
-        if (relatedUser && row.getCell(10).value) {
+        if (relatedUser) {
           // console.log(relatedUser)
           const rowData = {
             relatedUser: relatedUser?._id,
@@ -36,7 +38,7 @@ async function attendanceExcelImport(filePath) {
             relatedDepartment: relatedUser.relatedDepartment
           };
           data.push(rowData);
-        } 
+        }
         // else if (relatedUser && row.getCell(10).value === '') {
         //   console.log('undefined')
         //   const rowData = {
@@ -100,15 +102,16 @@ async function getDatesByMonth(month) {
   if (!months.includes(month)) return undefined;
 
   const monthIndex = months.indexOf(month);
-  const startDate = new Date(Date.UTC(new Date().getFullYear(), monthIndex, 1));
-  const endDate = new Date(Date.UTC(new Date().getFullYear(), monthIndex + 1, 0, 23, 59, 59, 999));
+  const year = new Date().getFullYear();
 
-  return ({ $gte: startDate.toISOString(), $lte: endDate.toISOString() })
+  // Create moment objects in the 'Asia/Rangoon' timezone
+  const startDate = moment.tz([year, monthIndex], 'Asia/Rangoon');
+  const endDate = startDate.clone().endOf('month');
 
+  // Convert to ISO string format
+  return { $gte: startDate.toISOString(), $lte: endDate.toISOString() };
 }
 
-async function entitledSalaryCalculation(attendances, totalDays, salaryPerDay) {
-  let entitledSalary = 0
-}
 
-module.exports = { entitledSalaryCalculation, bcryptHash, bcryptCompare, filterRequestAndResponse, sendEmail, attendanceExcelImport, getDatesByMonth };
+
+module.exports = { bcryptHash, bcryptCompare, filterRequestAndResponse, sendEmail, attendanceExcelImport, getDatesByMonth };
