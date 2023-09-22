@@ -286,6 +286,69 @@ exports.mobileAttendanceLists = async (req, res) => {
 
 }
 
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const earthRadius = 6371000; // Earth's radius in meters
+
+  // Convert latitude and longitude from degrees to radians
+  const radLat1 = (lat1 * Math.PI) / 180;
+  const radLon1 = (lon1 * Math.PI) / 180;
+  const radLat2 = (lat2 * Math.PI) / 180;
+  const radLon2 = (lon2 * Math.PI) / 180;
+
+  // Haversine formula
+  const dLat = radLat2 - radLat1;
+  const dLon = radLon2 - radLon1;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(radLat1) * Math.cos(radLat2) * Math.sin(dLon / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  // Calculate the distance in meters
+  const distance = earthRadius * c;
+
+  return distance;
+}
+
+//
+
+exports.mobileCheckIn = async (req, res) => {
+  try {
+    const { referenceLat, referenceLon, targetLat, targetLon, relatedEmployee, relatedDepartment, clockIn, date } = req.body
+    const distance = calculateDistance(referenceLat, referenceLon, targetLat, targetLon);
+    if (distance <= 100) {
+      const result = await Attendance.create({
+        relatedUser: relatedEmployee,
+        relatedDepartment: relatedDepartment,
+        date: date,
+        clockIn: clockIn,
+        isPaid: true,
+        type: 'Attend',
+        source: 'Field'
+      })
+      return res.status(200).send({ success: true, message: 'Within 100 meter', data: result })
+    } else {
+      return res.status(401).send({ error: true, message: 'Out of Bound! Please Try Again!' })
+    }
+  } catch (error) {
+    return res.status(500).send({ error: true, message: error.message })
+  }
+}
+
+exports.mobileCheckOut = async (req, res) => {
+  try {
+    const { referenceLat, referenceLon, targetLat, targetLon, attendaceID, clockOut } = req.body
+    const distance = calculateDistance(referenceLat, referenceLon, targetLat, targetLon);
+    if (distance <= 100) {
+      const result = await Attendance.findOneAndUpdate({ _id: attendaceID }, { clockOut: clockOut }, { new: true }).populate('relatedUser relatedDepartment')
+      return res.status(200).send({ success: true, message: 'Within 100 meter', data: result })
+    } else {
+      return res.status(401).send({ error: true, message: 'Out of Bound! Please Try Again!' })
+    }
+  } catch (error) {
+    return res.status(500).send({ error: true, message: error.message })
+  }
+}
+
 exports.mobileAttendanceDetail = async (req, res) => {
   const { month, relatedEmployee } = req.body;
   if (!months.includes(month)) return undefined;

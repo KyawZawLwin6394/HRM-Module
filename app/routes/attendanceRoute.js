@@ -38,4 +38,8 @@ module.exports = app => {
     .route('/api/attendances/mobile')
     .get(verifyToken, catchError(attendance.mobileAttendanceLists))
     .post(verifyToken, catchError(attendance.mobileAttendanceDetail))
+
+  app.route('/api/attendances/mobile/check-in')
+    .post(verifyToken, catchError(attendance.mobileCheckIn))
+    .put(verifyToken, catchError(attendance.mobileCheckOut))
 }
