@@ -9,7 +9,6 @@ let AttendanceSchema = new Schema({
     type: Date,
     default: Date.now
   },
-
   isDeleted: {
     type: Boolean,
     default: false
@@ -38,7 +37,7 @@ let AttendanceSchema = new Schema({
   },
   source: {
     type: String,
-    enum: ['Excel', 'Manual', 'Leave']
+    enum: ['Excel', 'Manual', 'Leave','Field']
   },
   clockIn: {
     type: String
