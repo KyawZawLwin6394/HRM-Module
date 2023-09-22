@@ -56,7 +56,7 @@ exports.calculatePayroll = (attendances, salaryPerDay, workingDays) => {
                 const result = checkEmployeeAttendance(day.clockIn, "09:30", "10:00", "11:00", salaryPerDay)
                 //console.log(result, 'salary', dayName)
                 return accumulator + result
-            } else if (workingDays.includes(dayName) === false) {
+            } else if (workingDays.includes(dayName) === false || day.attendType === 'Day Off') {
                 return accumulator + salaryPerDay
             } else if (workingDays.includes(dayName) === true && day.clockIn === '') {
                 return accumulator
