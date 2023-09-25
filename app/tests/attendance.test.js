@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../routes/attendanceRoute');
+const app = require('../../server');
 
 describe('API Endpoint Tests', () => {
     it('should return a 200 status code for GET /api/attendances', async () => {

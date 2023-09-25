@@ -327,7 +327,7 @@ exports.mobileCheckIn = async (req, res) => {
       })
       return res.status(200).send({ success: true, message: 'Within 100 meter', data: result })
     } else {
-      return res.status(401).send({ error: true, message: 'Out of Bound! Please Try Again!' })
+      return res.status(200).send({ error: true, message: 'Out of Bound! Please Try Again!' })
     }
   } catch (error) {
     return res.status(500).send({ error: true, message: error.message })
@@ -342,7 +342,7 @@ exports.mobileCheckOut = async (req, res) => {
       const result = await Attendance.findOneAndUpdate({ _id: attendaceID }, { clockOut: clockOut }, { new: true }).populate('relatedUser relatedDepartment')
       return res.status(200).send({ success: true, message: 'Within 100 meter', data: result })
     } else {
-      return res.status(401).send({ error: true, message: 'Out of Bound! Please Try Again!' })
+      return res.status(200).send({ error: true, message: 'Out of Bound! Please Try Again!' })
     }
   } catch (error) {
     return res.status(500).send({ error: true, message: error.message })

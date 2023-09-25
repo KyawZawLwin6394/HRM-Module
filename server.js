@@ -60,6 +60,8 @@ server.listen(port, () => {
   console.log('We are live on port: ', port);
 });
 
+module.exports = server;
+
 // cronitor.wraps(cron);
 // cronitor.schedule('AccountBalanceClosingAndOpening', '55 23 * * *', async function () {
 //   console.log('Managing AccountBalance for every Accounting Accs!');

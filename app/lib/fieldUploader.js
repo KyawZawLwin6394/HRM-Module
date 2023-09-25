@@ -2,7 +2,6 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const config = require('../../config/db');
-const uri = config.uploadsURI;
 
 function getRandomText() {
     var text = "";
@@ -64,9 +63,9 @@ var storage = multer.diskStorage({
 
 exports.upload = multer({
     fileFilter: function (req, file, cb) {
-        for (let i = 0; i < uri.length; i++) {
-            if (!fs.existsSync(uri[i])) {
-                fs.mkdirSync(uri[i], { recursive: true });
+        for (let i = 0; i < config.uploadsURI.length; i++) {
+            if (!fs.existsSync(config.uploadsURI[i])) {
+                fs.mkdirSync(config.uploadsURI[i], { recursive: true });
             }
         }
         let filetypes = /jpeg|jpg|png|pdf|docx|xlsx/;
