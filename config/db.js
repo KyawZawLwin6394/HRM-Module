@@ -8,8 +8,8 @@ const config = {
     app: {
       name: 'HRM',
     },
-    db: 'mongodb+srv://projectDev-01:O9YGEyPQvKyA3Q48@kwintechinstances.usgwoxy.mongodb.net/HRM?retryWrites=true&w=majority',
-    //db: 'mongodb+srv://projectDev-01:O9YGEyPQvKyA3Q48@kwintechinstances.usgwoxy.mongodb.net/medical-hrm?retryWrites=true&w=majority',
+    //db: 'mongodb+srv://projectDev-01:O9YGEyPQvKyA3Q48@kwintechinstances.usgwoxy.mongodb.net/HRM?retryWrites=true&w=majority',
+    db: 'mongodb+srv://projectDev-01:O9YGEyPQvKyA3Q48@kwintechinstances.usgwoxy.mongodb.net/medical-hrm?retryWrites=true&w=majority',
     uploadsURI: ['./uploads/hrm/employee/edu', './uploads/hrm/employee/attendanceImport', './uploads/hrm/employee/attach', './uploads/hrm/employee/married', './uploads/hrm/employee/pf', './uploads/hrm/employee/cv', './uploads/hrm/employee/other', './uploads/hrm/employee/recLet'],
     dbName: 'HRM',
     maxLoginAttempts: 5,
@@ -25,8 +25,8 @@ const config = {
     app: {
       name: 'HRM',
     },
-    db: 'mongodb+srv://projectDev-01:O9YGEyPQvKyA3Q48@kwintechinstances.usgwoxy.mongodb.net/HRM?retryWrites=true&w=majority',
-    //db: 'mongodb+srv://projectDev-01:O9YGEyPQvKyA3Q48@kwintechinstances.usgwoxy.mongodb.net/medical-hrm?retryWrites=true&w=majority',
+    //db: 'mongodb+srv://projectDev-01:O9YGEyPQvKyA3Q48@kwintechinstances.usgwoxy.mongodb.net/HRM?retryWrites=true&w=majority',
+    db: 'mongodb+srv://projectDev-01:O9YGEyPQvKyA3Q48@kwintechinstances.usgwoxy.mongodb.net/medical-hrm?retryWrites=true&w=majority',
     uploadsURI: ['./uploads/hrm/employee/edu', './uploads/hrm/employee/attendanceImport', './uploads/hrm/employee/attach', './uploads/hrm/employee/married', './uploads/hrm/employee/cv', './uploads/hrm/employee/pf', './uploads/hrm/employee/other', './uploads/hrm/employee/recLet'],
     dbName: 'HRM',
     maxLoginAttempts: 5,
