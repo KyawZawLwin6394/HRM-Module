@@ -62,21 +62,6 @@ async function attendanceExcelImport(filePath) {
   return data;
 }
 
-// Create a transporter using your Gmail account credentials
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: config.senderEmail, // Replace with your Gmail email address
-    pass: config.senderPassword // Replace with your Gmail password or an app-specific password if you have enabled 2-step verification
-  }
-});
-
-// Send the email
-async function sendEmail(mailOptions) {
-  const result = transporter.sendMail(mailOptions);
-  return result
-}
-
 async function filterRequestAndResponse(reArr, reBody) {
   if (reArr.length > 0) {
     const result = {};
@@ -114,4 +99,4 @@ async function getDatesByMonth(month) {
 
 
 
-module.exports = { bcryptHash, bcryptCompare, filterRequestAndResponse, sendEmail, attendanceExcelImport, getDatesByMonth };
+module.exports = { bcryptHash, bcryptCompare, filterRequestAndResponse, attendanceExcelImport, getDatesByMonth };

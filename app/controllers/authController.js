@@ -44,18 +44,7 @@ exports.login = (req, res) => {
       }
 
       user.comparePassword(req.body.password, function (err, user, reason) {
-        if (user && user.isDeleted === true) {
-          return res.status(403).send({
-            error: true,
-            message: "This account is deactivated. Pls contact an admin to activate it again"
-          })
-        }
-        if (user && user.emailVerify === false) {
-          return res.status(403).send({
-            error: true,
-            message: "Your email is not confirmed yet.Please confirm from your email."
-          })
-        }
+
         if (user && user.isDeleted === false) {
           var token = jwt.sign(
             { credentials: `${user._id}.${CONFIG.jwtKey}.${user.email}` },
