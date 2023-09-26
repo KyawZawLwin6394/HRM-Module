@@ -71,6 +71,35 @@ exports.listAllPayrolls = async (req, res) => {
   }
 };
 
+exports.mobileGetPayroll = async (req, res) => {
+  try {
+    const { month, emp } = req.query;
+    let query = { isDeleted: false }
+    if (month) query.month = month
+    if (emp) query.relatedUser = emp
+    console.log(query)
+    const result = await Payroll.find(query).populate({
+      path: 'relatedUser',
+      model: 'Users',
+      populate: [
+        {
+          path: 'relatedPosition',
+          model: 'Positions'
+        },
+        {
+          path: 'relatedDepartment',
+          model: 'Departments'
+        }
+      ]
+    })
+    console.log(result)
+    if (!result) return res.status(200).send({ error: true, message: 'Not Found!' })
+    return res.status(200).send({ success: true, data: result })
+  } catch (error) {
+    return res.status(500).send({ error: true, message: error.message })
+  }
+}
+
 exports.getPayrollDetail = async (req, res) => {
   try {
     let result = await Payroll.find({ _id: req.params.id }).populate({

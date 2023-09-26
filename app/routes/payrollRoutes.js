@@ -17,6 +17,9 @@ module.exports = (app) => {
         .post(verifyToken, catchError(payroll.activatePayroll));
 
     app.route('/api/payrolls').get(verifyToken, catchError(payroll.listAllPayrolls));
+
+    app.route('/api/payrolls/mobile').get(verifyToken, catchError(payroll.mobileGetPayroll))
+    
     app.route('/api/payrolls/extra').put(verifyToken, catchError(payroll.payExtra))
 
     app.route('/api/payrolls/calculate').get(verifyToken, catchError(payroll.calculatePayroll))
