@@ -198,7 +198,7 @@ exports.calculatePayroll = async (req, res) => {
         .sort({ date: 1 })
         .populate('relatedDepartment relatedUser')
 
-      if (result.length === 0) return res.status(404).send({
+      if (result.length === 0) return res.status(200).send({
         error: true,
         message: 'Not Found!',
         data: {
@@ -218,12 +218,12 @@ exports.calculatePayroll = async (req, res) => {
       console.log(workingDays, 'working days')
       const attendedDays = result.filter(item => item.isPaid === true && item.type === 'Attend')
       const attendedSalary = RuleUtil.calculatePayroll(attendedDays, salaryPerDay, workingDays)
-      if (attendedSalary.success === false) return res.status(500).send({ error: true, message: attendedSalary.message })
+      if (attendedSalary.success === false) return res.status(200).send({ error: true, message: attendedSalary.message })
 
       const dimissDays = result.filter(item => item.isPaid === false && item.type === 'Dismiss')
 
       const dismissedSalary = RuleUtil.calculatePayroll(dimissDays, salaryPerDay, workingDays)
-      if (dismissedSalary.success === false) return res.status(500).send({ error: true, message: dismissedSalary.message })
+      if (dismissedSalary.success === false) return res.status(200).send({ error: true, message: dismissedSalary.message })
 
       const paidCount = totalAttendance - dimissDays.length
       if (saveStatus === true) {
@@ -255,10 +255,10 @@ exports.calculatePayroll = async (req, res) => {
           unpaid: dimissDays.length
         }
       })
-    } else return res.status(500).send({ error: true, message: 'Department, Employee, Month and BasicSalary is needed!' })
+    } else return res.status(200).send({ error: true, message: 'Department, Employee, Month and BasicSalary is needed!' })
   } catch (error) {
     console.log(error)
-    return res.status(500).send({ error: true, message: error.message })
+    return res.status(200).send({ error: true, message: error.message })
   }
 }
 
