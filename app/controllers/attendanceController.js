@@ -198,7 +198,7 @@ exports.calculatePayroll = async (req, res) => {
         .sort({ date: 1 })
         .populate('relatedDepartment relatedUser')
 
-      if (result.length === 0) return res.status(404).send({
+      if (result.length === 0) return res.status(200).send({
         error: true,
         message: 'Not Found!',
         data: {
