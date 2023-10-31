@@ -123,7 +123,7 @@ exports.upload = multer({
         },
         {
             name: 'attendanceImport',
-            maxCount: 1
+            maxCount: 10
         },
         {
             name: 'offerLetter',
