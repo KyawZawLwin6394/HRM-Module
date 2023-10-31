@@ -64,8 +64,9 @@ exports.createUser = async (req, res) => {
 
 exports.getEmployeeByDepartmentID = async (req, res) => {
   const { dep } = req.query
+  
   try {
-    const employeeResult = await User.find({ relatedDepartment: dep })
+    const employeeResult = await User.find({ relatedDepartment: dep}).populate("relatedPosition relatedDepartment");
     if (employeeResult.length === 0) return res.status(404).send({ error: true, message: 'Not Found!' })
     return res.status(200).send({ success: true, data: employeeResult })
   } catch (error) {
@@ -139,7 +140,7 @@ exports.updateUser = async (req, res, next) => {
   let data = req.body
   const files = req.files
   try {
-    const attachments = []
+    if(files){const attachments = []
     const attachmentTypes = ['cv', 'edu', 'recLet', 'other', 'pf', 'married']
     const attachmentMappings = {
       cv: 'CV',
@@ -184,7 +185,7 @@ exports.updateUser = async (req, res, next) => {
           data[attachmentMappings[type]].push(id); // Add the ID to the existing array
         }
       }
-    }
+    }}
     console.log(data)
     let result = await User.findOneAndUpdate(
       { _id: data.id },

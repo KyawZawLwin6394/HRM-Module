@@ -9,7 +9,7 @@ module.exports = (app) => {
         .route('/api/department')
         .post(catchError(department.createDepartment))
         .put(verifyToken, catchError(department.updateDepartment));
-
+        
     app
         .route('/api/department/:id')
         .get(verifyToken, catchError(department.getDepartmentDetail))

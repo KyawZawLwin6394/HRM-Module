@@ -31,11 +31,15 @@ var storage = multer.diskStorage({
             cb(null, './uploads/hrm/employee/attach');
         } else if (file.fieldname === "attendanceImport") {
             cb(null, './uploads/hrm/employee/attendanceImport');
+        } else if (file.fieldname === "offerLetter") {
+            console.log("cover letter is ")
+            cb(null, './uploads/hrm/employee/offerLetter');
         }
 
 
     },
     filename: function (req, file, cb) {
+        console.log("filename is "+file.originalname)
         let name = file.originalname.split(".")[0];
         let ext = file.originalname.split(".")[1];
         const randomText = getRandomText();
@@ -55,6 +59,8 @@ var storage = multer.diskStorage({
             cb(null, "LA-" + name + randomText + Date.now() + "." + ext)
         } else if (file.fieldname === "attendanceImport") {
             cb(null, "AI-" + name + randomText + Date.now() + "." + ext)
+        }  else if (file.fieldname === "offerLetter") {
+            cb(null, "CL-" + name + randomText + Date.now() + "." + ext)
         }
 
 
@@ -117,6 +123,10 @@ exports.upload = multer({
         },
         {
             name: 'attendanceImport',
+            maxCount: 1
+        },
+        {
+            name: 'offerLetter',
             maxCount: 1
         },
     ]
