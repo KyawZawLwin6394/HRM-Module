@@ -121,7 +121,7 @@ exports.excelImport = async (req, res) => {
   try {
     const files = req.files
     if (!files.attendanceImport) return res.status(404).send({ error: true, message: 'File Not Found!' })
-    console.log(files.attendanceImport)
+    console.log("imort excel is "+JSON.stringify(files.attendanceImport))
     for (const i of files.attendanceImport) {
       const subpath = path.join('app', 'controllers');  // Construct the subpath using the platform's path separator
       const newPath = __dirname.replace(subpath, '');
