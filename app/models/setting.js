@@ -14,6 +14,15 @@ let SettingSchema = new Schema({
     refAddress: {
         type: String
     },
+    deal:{
+        type: String
+    },
+    startDate:{
+        type:Date,
+    },
+    endDate:{
+        type:Date,
+    },
     penalty: [{
         pName: {
             type: String

@@ -22,9 +22,9 @@ async function attendanceExcelImport(filePath) {
       console.log("treatment name is "+row.getCell(1).value)
       try {
         const employeeName = row.getCell(4).value
-       // const filtered = employeeName ? employeeName.split(' ') : ''
+        const filtered = employeeName ? employeeName.split(' (KWD)') : ''
        // console.log("fileter is "+employeeName)
-        const relatedUser = await User.findOne({ givenName: employeeName });
+        const relatedUser = await User.findOne({ givenName: filtered });
         // console.log(relatedUser, filtered)
         if (relatedUser) {
           // console.log(relatedUser)
@@ -96,9 +96,9 @@ async function getDatesByMonth(month) {
   // Create moment objects in the 'Asia/Rangoon' timezone
   const startDate = moment.tz([year, monthIndex], 'Asia/Rangoon');
   const endDate = startDate.clone().endOf('month');
-
+  console.log("ison string not convert is "+startDate.toISOString())
   // Convert to ISO string format
-  return { $gte: startDate.toISOString(), $lte: endDate.toISOString() };
+  return { $gte: startDate.toISOString(), $lt: endDate.toISOString() };
 }
 
 

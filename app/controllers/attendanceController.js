@@ -191,15 +191,26 @@ exports.calculatePayroll = async (req, res) => {
     if (!(dep && emp && basicSalary && month)) return res.status(200).send({ error: true, message: 'Department, Employee, Month, and BasicSalary are needed!' });
     const totalDays = new Date((await UserUtil.getDatesByMonth(month)).$lte).getUTCDate();
     const dates = await UserUtil.getDatesByMonth(month);
-    const result = await Attendance.find({ relatedDepartment: dep, relatedUser: emp, date: dates }).sort({ date: 1 }).populate('relatedDepartment relatedUser');
+    console.log("datae is "+JSON.stringify(dates))
+    const result = await Attendance.find({ relatedDepartment: dep, relatedUser: emp }).sort({ date: 1 }).populate('relatedDepartment relatedUser')
+                   .where({ date: dates});
+   
     if (!result.length) return res.status(200).send({ error: true, message: 'Not Found!', data: { attendedSalary: 0, dismissedSalary: 0, entitledSalary: 0, totalAttendance: 0, paid: 0, unpaid: 0 } });
     const totalAttendance = result.length;
     const salaryPerDay = basicSalary / totalDays;
-    const { workingDay } = await Employee.findOne({ _id: emp }).populate('relatedPosition');
+    
+   
+    let employee = await Employee.findById( emp ).populate('relatedPosition');
+     const workingDay  = employee.relatedPosition.workingDay;
+    
     const [attendedDays, dismissedDays] = [result.filter(item => item.isPaid && item.type === 'Attend'), result.filter(item => !item.isPaid && item.type === 'Dismiss')];
-    const [attendedSalary, dismissedSalary] = [RuleUtil.calculatePayroll(attendedDays, salaryPerDay, workingDay), RuleUtil.calculatePayroll(dismissedDays, salaryPerDay, workingDay)];
+    
+    const [attendedSalary, dismissedSalary] = [RuleUtil.calculatePayroll(attendedDays, salaryPerDay, workingDay),// RuleUtil.calculatePayroll(dismissedDays, salaryPerDay, workingDay)
+  ];
+     console.log("dasa is "+Object.stringify(attendedSalary))
     if (!attendedSalary.success) return res.status(200).send({ error: true, message: attendedSalary.message });
     if (!dismissedSalary.success) return res.status(200).send({ error: true, message: dismissedSalary.message });
+    
     const paidCount = totalAttendance - dismissedDays.length;
     if (saveStatus === true) {
       const payroll = await PayRoll.find({ relatedUser: emp, relatedDepartment: dep, month: month });

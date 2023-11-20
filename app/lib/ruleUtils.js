@@ -33,7 +33,9 @@ exports.calculatePayroll = async (attendances, salaryPerDay, workingDays) => {
         const entitledSalary = attendances
             .filter(item => item.isPaid)
             .reduce((acc, day) => {
+                console.log("acc is "+acc)
                 const dayName = convertToWeekDayNames(day.date);
+                console.log("dayName is "+dayName)
                 return acc + (
                     (day.clockIn && workingDays.includes(dayName))
                         ? checkEmployeeAttendance(day.clockIn, settings[0], salaryPerDay)
@@ -44,6 +46,7 @@ exports.calculatePayroll = async (attendances, salaryPerDay, workingDays) => {
                                 : 0
                 );
             }, 0);
+            console.log("enititled Salary is "+entitledSalary)
         return { success: true, salary: entitledSalary };
     } catch (error) {
         return { success: false, message: error.message };
