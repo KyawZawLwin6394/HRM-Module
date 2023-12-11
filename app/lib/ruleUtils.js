@@ -13,10 +13,19 @@ const calculatePenalty = (name, settings, salaryPerDay) => settings[name].pAmoun
 const checkEmployeeAttendance = (inputTimeStr, settings, salaryPerDay) => {
     const [inputHours, inputMinutes] = inputTimeStr.split(":").map(Number);
     let salary = salaryPerDay;
-    if (isLate(inputHours, inputMinutes, settings.fnlpenalty.pTime)) salary -= calculatePenalty('fnlpenalty', settings, salaryPerDay);
-    else if (isLate(inputHours, inputMinutes, settings.thdpenalty.pTime)) salary -= calculatePenalty('thdpenalty', settings, salaryPerDay);
-    else if (isLate(inputHours, inputMinutes, settings.secpenalty.pTime)) salary -= calculatePenalty('secpenalty', settings, salaryPerDay);
-    else if (isLate(inputHours, inputMinutes, settings.fstpenalty.pTime)) salary -= calculatePenalty('fstpenalty', settings, salaryPerDay);
+    if (isLate(inputHours, inputMinutes, settings.fnlpenalty.pTime))
+      {
+         salary -= calculatePenalty('fnlpenalty', settings, salaryPerDay);
+      }
+    else if (isLate(inputHours, inputMinutes, settings.thdpenalty.pTime)){
+      salary -= calculatePenalty('thdpenalty', settings, salaryPerDay);  
+    } 
+    else if (isLate(inputHours, inputMinutes, settings.secpenalty.pTime)){
+        salary -= calculatePenalty('secpenalty', settings, salaryPerDay);
+    }
+    else if (isLate(inputHours, inputMinutes, settings.fstpenalty.pTime)) {
+        salary -= calculatePenalty('fstpenalty', settings, salaryPerDay);
+    }
     else console.log("The employee is on time or early.", inputTimeStr);
     return salary;
 };
@@ -28,21 +37,19 @@ const isLate = (inputHours, inputMinutes, thresholdTimeStr) => {
 
 exports.calculatePayroll = async (attendances, salaryPerDay, workingDays) => {
     try {
-        const settings = await Setting.find({ _id: '651a509cf4fb8a5371913a55' });
+        const settings = await Setting.find({ _id: '651a47a7e259234bf081204c' });
         if (!settings) return { error: true, message: 'Settings Not Found!' };
-        const entitledSalary = attendances
-            .filter(item => item.isPaid)
-            .reduce((acc, day) => {
+        const entitledSalary = attendances.filter(item => item.isPaid).reduce((acc, day) => {
                 console.log("acc is "+acc)
                 const dayName = convertToWeekDayNames(day.date);
-                console.log("dayName is "+dayName)
+                console.log("dayName is "+salaryPerDay)
                 return acc + (
                     (day.clockIn && workingDays.includes(dayName))
                         ? checkEmployeeAttendance(day.clockIn, settings[0], salaryPerDay)
                         : (!workingDays.includes(dayName) || day.attendType === 'Day Off')
-                            ? acc + salaryPerDay
-                            : (workingDays.includes(dayName) && !day.clockIn)
-                                ? acc
+                            ? salaryPerDay
+                            // : (workingDays.includes(dayName) && !day.clockIn)
+                            //     ? acc
                                 : 0
                 );
             }, 0);

@@ -22,28 +22,37 @@ exports.createAttendance = async (req, res) => {
 }
 
 exports.listAllAttendances = async (req, res) => {
-  let { keyword, role, limit, skip, rowsPerPage, } = req.query
-  let count = 0
-  let page = 0
-  try {
-   // limit = +limit <= 100 ? +limit : 10
-    skip = +skip || 0
-    let query = { isDeleted: false },
+ let { keyword, role, limit, skip, rowsPerPage, fromDate, toDate, relatedDepartment, relatedUser, type} = req.query
+ let count = 0
+ let page = 0
+ try {
+    
+  fromDate ? fromDate = new Date(fromDate) : ""
+  toDate ? toDate = new Date(toDate) : ""
+  skip = +skip || 0
+  let query = { isDeleted: false },
       regexKeyword
-    role ? (query['role'] = role.toUpperCase()) : ''
-    keyword && /\w/.test(keyword)
+  role ? (query['role'] = role.toUpperCase()) : ''  
+  relatedDepartment  ? (query['relatedDepartment'] = relatedDepartment) : ""
+  type ? (query['type'] = type ) : ""
+  fromDate && toDate ? ( query["date"] = {"$gte": fromDate,"$lte": toDate}) 
+                        : fromDate ? ( query["date"] = {"$gte": fromDate}) 
+                        : toDate ? ( query["date"] = {"$lte": toDate}) 
+                        : ""
+  relatedUser ? (query['relatedUser'] = relatedUser) : ""
+  keyword && /\w/.test(keyword)
       ? (regexKeyword = new RegExp(keyword, 'i'))
       : ''
-    regexKeyword ? (query['name'] = regexKeyword) : ''
-    let result = await Attendance.find(query)
+  regexKeyword ? (query['name'] = regexKeyword) : ''
+  let result = await Attendance.find(query)
       .skip(skip)
       .populate('relatedDepartment relatedUser')
        //.limit(limit)
-    count = await Attendance.find(query).count()
-    const division = count / (rowsPerPage) // || limit)
-    page = Math.ceil(division)
-    let unpaid = await Attendance.find(query).count()
-    res.status(200).send({
+  count = await Attendance.find(query).count()
+  const division = count / (rowsPerPage) // || limit)
+  page = Math.ceil(division)
+  let unpaid = await Attendance.find(query).count()
+  res.status(200).send({
       success: true,
       count: count,
       unpaidCount: unpaid,
@@ -191,32 +200,33 @@ exports.calculatePayroll = async (req, res) => {
     if (!(dep && emp && basicSalary && month)) return res.status(200).send({ error: true, message: 'Department, Employee, Month, and BasicSalary are needed!' });
     const totalDays = new Date((await UserUtil.getDatesByMonth(month)).$lte).getUTCDate();
     const dates = await UserUtil.getDatesByMonth(month);
-    console.log("datae is "+JSON.stringify(dates))
+    console.log("datae is ", totalDays)
     const result = await Attendance.find({ relatedDepartment: dep, relatedUser: emp }).sort({ date: 1 }).populate('relatedDepartment relatedUser')
                    .where({ date: dates});
    
     if (!result.length) return res.status(200).send({ error: true, message: 'Not Found!', data: { attendedSalary: 0, dismissedSalary: 0, entitledSalary: 0, totalAttendance: 0, paid: 0, unpaid: 0 } });
     const totalAttendance = result.length;
     const salaryPerDay = basicSalary / totalDays;
-    
+    console.log("salary per day from attendance is ",salaryPerDay)
    
     let employee = await Employee.findById( emp ).populate('relatedPosition');
      const workingDay  = employee.relatedPosition.workingDay;
-    
-    const [attendedDays, dismissedDays] = [result.filter(item => item.isPaid && item.type === 'Attend'), result.filter(item => !item.isPaid && item.type === 'Dismiss')];
-    
-    const [attendedSalary, dismissedSalary] = [RuleUtil.calculatePayroll(attendedDays, salaryPerDay, workingDay),// RuleUtil.calculatePayroll(dismissedDays, salaryPerDay, workingDay)
-  ];
-     console.log("dasa is "+Object.stringify(attendedSalary))
-    if (!attendedSalary.success) return res.status(200).send({ error: true, message: attendedSalary.message });
-    if (!dismissedSalary.success) return res.status(200).send({ error: true, message: dismissedSalary.message });
-    
-    const paidCount = totalAttendance - dismissedDays.length;
-    if (saveStatus === true) {
-      const payroll = await PayRoll.find({ relatedUser: emp, relatedDepartment: dep, month: month });
-      if (!payroll.length) await PayRoll.create({ entitledSalary: Math.round(attendedSalary.salary - (dismissedSalary.salary || 0)), relatedUser: emp, relatedDepartment: dep, totalAttendance: totalAttendance, attendedSalary: Math.round(attendedSalary.salary), dismissedSalary: Math.round(dismissedSalary.salary), paidDays: paidCount, unpaidDays: dismissedDays.length, month: month });
-    }
-    return res.status(200).send({ success: true, data: { attendedSalary: Math.round(attendedSalary.salary), dismissedSalary: Math.round(dismissedSalary.salary), entitledSalary: Math.round(attendedSalary.salary - (dismissedSalary.salary || 0)), totalAttendance: totalAttendance, paid: paidCount, unpaid: dismissedDays.length } });
+     //written by oakar
+     const [attendedDays, dismissedDays] = [result.filter(item => item.isPaid && item.type === 'Attend'), result.filter(item => !item.isPaid && item.type === 'Dismiss')];
+     console.log("attendDays is ",attendedDays.length)
+
+     const attendedSalary = await RuleUtil.calculatePayroll(attendedDays, salaryPerDay, workingDay);
+     const dismissedSalary = await RuleUtil.calculatePayroll(dismissedDays, salaryPerDay, workingDay) ;
+
+    // dismissedSalary, RuleUtil.calculatePayroll(dismissedDays, salaryPerDay, workingDay)
+     if (!attendedSalary.success) return res.status(200).send({ error: true, message: attendedSalary.message });
+     if (!dismissedSalary.success) return res.status(200).send({ error: true, message: dismissedSalary.message });
+      
+    // if (saveStatus === true) {
+    //   const payroll = await PayRoll.find({ relatedUser: emp, relatedDepartment: dep, month: month });
+    //   if (!payroll.length) await PayRoll.create({ entitledSalary: Math.round(attendedSalary.salary - (dismissedSalary.salary || 0)), relatedUser: emp, relatedDepartment: dep, totalAttendance: totalAttendance, attendedSalary: Math.round(attendedSalary.salary), dismissedSalary: Math.round(dismissedSalary.salary), paidDays: paidCount, unpaidDays: dismissedDays.length, month: month });
+    // }
+     return res.status(200).send({ success: true, data: { attendedSalary: Math.round(attendedSalary.salary), dismissedSalary: Math.round(dismissedSalary.salary), entitledSalary: Math.round(attendedSalary.salary - (dismissedSalary.salary || 0)), totalAttendance: totalAttendance,  unpaid: dismissedDays.length } });
   } catch (error) {
     console.log(error);
     return res.status(200).send({ error: true, message: error.message });

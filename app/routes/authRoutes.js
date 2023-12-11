@@ -8,7 +8,7 @@ const verifySubscription = require('../lib/verifySubscription');
 
 module.exports = app => {
 
-       app.route('/api/auth/login').post(verifySubscription);//auth.login
+       app.route('/api/auth/login').post(auth.login );//auth.login
 
        app.route('/api/auth/logout').get(verifyToken, catchError(auth.logout));
        app.route('/api/auth/verify').get(auth.verifyToken)

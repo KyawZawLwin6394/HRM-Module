@@ -22,30 +22,30 @@ let PayrollSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Departments'
   },
-  maPerDay: {
-    type: Number,
-    default: 0
-  },
-  maTotalDays: {
-    type: Number,
-    default: 0
-  },
-  maTotalAmount: {
-    type: Number,
-    default: 0
-  },
-  travelPerDay: {
-    type: Number,
-    default: 0
-  },
-  travelTotalDays: {
-    type: Number,
-    default: 0
-  },
-  travelTotalAmount: {
-    type: Number,
-    default: 0
-  },
+  // maPerDay: {
+  //   type: Number,
+  //   default: 0
+  // },
+  // maTotalDays: {
+  //   type: Number,
+  //   default: 0
+  // },
+  // maTotalAmount: {
+  //   type: Number,
+  //   default: 0
+  // },
+  // travelPerDay: {
+  //   type: Number,
+  //   default: 0
+  // },
+  // travelTotalDays: {
+  //   type: Number,
+  //   default: 0
+  // },
+  // travelTotalAmount: {
+  //   type: Number,
+  //   default: 0
+  // },
   otPerDay: {
     type: Number,
     default: 0
@@ -58,20 +58,98 @@ let PayrollSchema = new Schema({
     type: Number,
     default: 0
   },
-  incentiveReason: {
+  // AReason : {
+  //   type: String
+  // },
+  // AAmount : {
+  //   type: Number,
+  //   default: 0
+  // },
+  // BReason : {
+  //   type: String
+  // },
+  // BAmount : {
+  //   type: Number,
+  //   default: 0
+  // },
+  // CReason : {
+  //   type: String
+  // },
+  // CAmount : {
+  //   type: Number,
+  //   default: 0
+  // },
+  // perReason : {
+  //   type: String
+  // },
+  // perAmount : {
+  //   type: Number,
+  //   default: 0
+  // },
+  // positionReason : {
+  //   type: String
+  // },
+  // positionAmount : {
+  //   type: Number,
+  //   default: 0
+  // },
+  // technicalReason : {
+  //   type: String
+  // },
+  // technicalAmount : {
+  //   type: Number,
+  //   default: 0
+  // },
+  // partiReason : {
+  //   type: String
+  // },
+  // partiAmount : {
+  //   type: Number,
+  //   default: 0
+  // },
+  // tranReason : {
+  //   type: String
+  // },
+  // tranAmount : {
+  //   type: Number,
+  //   default: 0
+  // },
+  // attendReason : {
+  //   type: String
+  // },
+  // attendAmount : {
+  //   type: Number,
+  //   default: 0
+  // },
+  // governmentReason : {
+  //   type: String
+  // },
+  // governmentAmount : {
+  //   type: Number,
+  //   default: 0
+  // },
+  reductionReason : {
     type: String
   },
-  incentiveAmount: {
+  reductionAmount : {
     type: Number,
     default: 0
   },
-  bonusReason: {
+  // incentiveReason: {
+  //   type: String
+  // },
+  // incentiveAmount: {
+  //   type: Number,
+  //   default: 0
+  // },
+  temporaryBonusReason: {
     type: String
   },
-  bonusAmount: {
+  temporaryonusAmount: {
     type: Number,
     default: 0
   },
+  
   incomeTaxPercent: {
     type: String
   },
@@ -98,7 +176,8 @@ let PayrollSchema = new Schema({
     type: Number
   },
   entitledSalary: {
-    type: Number
+    type: Number,
+    default : 0
   },
   paidDays: {
     type: Number,

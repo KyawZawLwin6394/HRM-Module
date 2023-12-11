@@ -92,13 +92,13 @@ async function getDatesByMonth(month) {
 
   const monthIndex = months.indexOf(month);
   const year = new Date().getFullYear();
-
+  console.log("year is ", moment.tz([year, monthIndex], 'Asia/Rangoon'))
   // Create moment objects in the 'Asia/Rangoon' timezone
   const startDate = moment.tz([year, monthIndex], 'Asia/Rangoon');
   const endDate = startDate.clone().endOf('month');
   console.log("ison string not convert is "+startDate.toISOString())
   // Convert to ISO string format
-  return { $gte: startDate.toISOString(), $lt: endDate.toISOString() };
+  return { $gte: startDate.toISOString(), $lte: endDate.toISOString() };
 }
 
 

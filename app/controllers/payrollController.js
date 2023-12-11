@@ -8,12 +8,33 @@ const leave = require('../models/leave');
 
 exports.createPayroll = async (req, res) => {
   let data = req.body;
+  console.log("Payroll is "+JSON.stringify(data))
   try {
-    let result = await Payroll.create(data);
-    res.status(200).send({
+  const payroll = await Payroll.find({ relatedUser: data.relatedUser, relatedDepartment: data.relatedDepartment, month: data.month });
+  // if (!payroll.length) await PayRoll.create({ entitledSalary: Math.round(attendedSalary.salary - (dismissedSalary.salary || 0)), 
+  //                            relatedUser: emp, 
+  //                            relatedDepartment: dep, 
+  //                            totalAttendance: totalAttendance, 
+  //                            attendedSalary: Math.round(attendedSalary.salary), 
+  //                            dismissedSalary: Math.round(dismissedSalary.salary), 
+  //                            paidDays: paidCount, 
+  //                            unpaidDays: dismissedDays.length, 
+  //                            month: month 
+  //                           });
+    if(!payroll.length){
+      let result = await Payroll.create(data);
+      res.status(200).send({
       success: true,
       data: result,
-    });
+      });
+    }
+    else {
+      res.status(403).send({
+       error:true,
+       message:"Payroll's already saved"
+      })
+    }
+    
   } catch (e) {
     console.log(e)
     return res.status(500).send({ error: true, message: e.message });
@@ -24,6 +45,7 @@ exports.listAllPayrolls = async (req, res) => {
   let { keyword, role, limit, skip, rowsPerPage, month, relatedDepartment } = req.query;
   let count = 0;
   let page = 0;
+  let totalPaidAmount = 0;
   try {
     limit = +limit <= 100 ? +limit : 10;
     skip = +skip || 0;
@@ -37,7 +59,7 @@ exports.listAllPayrolls = async (req, res) => {
     if (relatedDepartment) query.relatedDepartment = relatedDepartment
     if (month) query.month = month
     console.log(query)
-    let result = await Payroll.find(query).skip(skip).limit(limit).populate({
+    let result = await Payroll.find(query).skip(skip).populate({
       path: 'relatedUser',
       model: 'Users',
       populate: [
@@ -51,10 +73,13 @@ exports.listAllPayrolls = async (req, res) => {
         }
       ]
     })
+    for(let i=0; i<result.length; i++){
+       totalPaidAmount += result[i].netSalary === 0 ? result[i].entitledSalary : result[i].netSalary;
+    }
     count = await Payroll.find(query).count();
     const division = count / (rowsPerPage || limit);
     page = Math.ceil(division);
-
+    console.log("dfa is "+result)
     res.status(200).send({
       success: true,
       count: count,
@@ -62,6 +87,7 @@ exports.listAllPayrolls = async (req, res) => {
         current_page: skip / limit + 1,
         per_page: limit,
         page_count: page,
+        totalPaidAmount: totalPaidAmount,
         total_count: count,
       },
       data: result,
@@ -202,12 +228,13 @@ exports.calculatePayroll = async (req, res) => {
     const payload = {
       relatedDepartment: relatedDepartment ?? undefined,
     };
+   // console.log("montha and realted Department is "+month+" "+relatedDepartment)
     let insertPayload = []
     const employeeResult = await Employee.find(payload).populate('relatedDepartment').populate({
       path: 'relatedPosition',
       model: 'Positions'
     });
-    console.log(month)
+   // console.log(month)
     if (employeeResult.length === 0) return res.status(404).send({ error: true, message: 'Employee Result Not Found!' })
     //preparing startDate and endDate
 
@@ -250,4 +277,38 @@ exports.calculatePayroll = async (req, res) => {
     console.log(error)
     return res.status(500).send({ error: true, message: error.message })
   }
+}
+
+exports.getTotalAmountByMonth = async (req,res) =>{
+  let labels = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var totalAmounts = [];
+  let datas ={
+    labels: labels,
+  }; 
+  datas.datasets = []
+  
+  datas.datasets.push({
+    label:"Total Salary",
+    backgroundColor: "rgb(155, 99, 192)",
+    borderColor: "rgb(155, 99, 182)",
+  })
+  let results =  await Payroll.find();
+  // 
+  let totalResult = results.reduce((total,result)=>{ 
+     let month = result.month;
+     total[month] = (total[month] || 0)+ (result.netSalary !=0 ? result.netSalary : result.entitledSalary)
+     return total;
+    
+  },{})
+ 
+  labels.map(month =>{
+   totalResult[month] ? totalAmounts.push(totalResult[month]) : totalAmounts.push(0)
+  })
+   console.log("amount",totalAmounts)
+  
+  datas.datasets[0].data=totalAmounts
+  return res.status(200).send({
+    success: true,
+    data: datas
+  })
 }
