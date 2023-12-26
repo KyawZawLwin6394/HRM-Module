@@ -5,6 +5,7 @@ const path = require('path');
 const Employee = require('../models/user');
 const RuleUtil = require('../lib/ruleUtils');
 const PayRoll = require('../models/payroll');
+const Setting = require('../models/setting');
 const months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 exports.createAttendance = async (req, res) => {
@@ -330,4 +331,12 @@ exports.mobileAttendanceDetail = async (req, res) => {
   const employeeResult = await Employee.find({ _id: relatedEmployee }).select('casualLeaves medicalLeaves vacationLeaves maternityLeaveMale maternityLeaveFemale')
   const attendanceResult = await Attendance.find({ date: { $gte: startDate.toISOString(), $lte: endDate.toISOString() }, relatedUser: relatedEmployee, isDeleted: false })
   return res.status(200).send({ success: true, employee: employeeResult[0], data: attendanceResult })
+}
+
+exports.getLatLng = async(req,res) => {
+   const resultLatLng = await Setting.find({});
+   return res.status(200).send({
+    success: true,
+    data: resultLatLng
+   })
 }

@@ -27,7 +27,7 @@ async function attendanceExcelImport(filePath) {
         const relatedUser = await User.findOne({ givenName: filtered });
         // console.log(relatedUser, filtered)
         if (relatedUser) {
-          // console.log(relatedUser)
+          console.log(relatedUser)
           const rowData = {
             relatedUser: relatedUser?._id,
             clockIn: row.getCell(10).value,
