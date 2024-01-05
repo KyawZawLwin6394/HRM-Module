@@ -288,7 +288,7 @@ exports.mobileCheckIn = async (req, res) => {
   try {
     const { referenceLat, referenceLon, targetLat, targetLon, relatedEmployee, relatedDepartment, clockIn, date } = req.body
     const distance = calculateDistance(referenceLat, referenceLon, targetLat, targetLon);
-    if (distance <= 100) {
+    if (distance <= 300) {
       const result = await Attendance.create({
         relatedUser: relatedEmployee,
         relatedDepartment: relatedDepartment,
@@ -311,7 +311,7 @@ exports.mobileCheckOut = async (req, res) => {
   try {
     const { referenceLat, referenceLon, targetLat, targetLon, attendaceID, clockOut } = req.body
     const distance = calculateDistance(referenceLat, referenceLon, targetLat, targetLon);
-    if (distance <= 100) {
+    if (distance <= 300) {
       const result = await Attendance.findOneAndUpdate({ _id: attendaceID }, { clockOut: clockOut }, { new: true }).populate('relatedUser relatedDepartment')
       return res.status(200).send({ success: true, message: 'Within 100 meter', data: result })
     } else {
